@@ -1,0 +1,23 @@
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1e1b4b,
+        #4c1d95
+    );
+}
+
+section{
+    width: 400px;
+    padding: 30px;
+    border-radius: 15px;
+
+    background: #ffffff;
+
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+}
