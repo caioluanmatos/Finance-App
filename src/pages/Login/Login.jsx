@@ -1,13 +1,23 @@
 import './Login.css'
 import { FaUser , FaLock } from 'react-icons/fa'
+import logo from '../../assets/images/Logo/logoapp.png'
 
 function Login (){
     return (
 
         <main>
             <section>
-                <h1>Finance App</h1>
-                <p>Bem-Vindo de Volta</p>
+
+                
+                    <div className="logo-area">
+                         <img src={logo} alt="Logo Finance App" />
+
+                            <h1>Finance App</h1>
+
+                            <p>Organize hoje. Conquiste amanhã.</p>
+                    </div>
+
+                
 
             <form>
                 <label htmlFor='email'>E-mail</label>
@@ -18,7 +28,7 @@ function Login (){
                     <input
                         type='email'
                         id='email'
-                        placeholder='Digita seu e-mail'
+                        placeholder='Digite seu e-mail'
                         />
                 </div>
 
@@ -31,7 +41,7 @@ function Login (){
                     <input
                         type='password'
                         id='password'
-                        placeholder='Digita sua senha'
+                        placeholder='Digite sua senha'
                         />
                 </div>
 

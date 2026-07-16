@@ -21,3 +21,80 @@ section{
 
     box-shadow: 0 10px 30px rgba(0,0,0,.35);
 }
+
+
+.logo-area{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.logo-area img{
+    width: 140px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    border: 2px solid #1e1b4b;
+    box-shadow: 0 8px 20px rgba(30, 27, 75, 0.35);
+
+    transition: 0.3s;
+}
+
+
+.logo-area img:hover{
+     transform: scale(1.08) rotate(2deg);
+
+}
+
+
+.logo-area h1{
+    margin: 0;
+    font-size: 2rem;
+}
+
+.logo-area p{
+    margin-top: 10px;
+    color: #666;
+    font-size: 15px;
+}
+
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    width: 100%;
+    padding: 12px 14px;
+
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+
+    background: #f8fafc;
+}
+
+.input-group input {
+    width: 100%;
+
+    border: none;
+    outline: none;
+
+    background: transparent;
+    font-size: 15px;
+}
+
+.input-group svg {
+    color: #4c1d95;
+    font-size: 18px;
+}
+
+.input-group:focus-within {
+    border-color: #6d28d9;
+    box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.15);
+}
