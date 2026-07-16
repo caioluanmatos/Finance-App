@@ -46,18 +46,22 @@ function Login (){
                 </div>
 
 
-                    <label>
-                        <input type="checkbox"/>
-                        Lembrar-me
-                    </label>
+                   <div className="remember-me">
+                         <label>
+                             <input type="checkbox" />
+                             Lembrar-me
+                            </label>
+                    </div>
 
                     <button type='submit'>
                         Entrar
                     </button>
 
-                    <p>Não possui uma conta?</p>
+                    <div className="register-link">
+                        <p>Não possui uma conta?</p>
 
-                    <a href='#'>Criar conta</a>
+                            <a href="#">Criar conta</a>
+                    </div>
 
                     <hr />
             </form>
