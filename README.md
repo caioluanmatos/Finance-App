@@ -57,7 +57,7 @@ src/
 
 - [x] Estrutura inicial do projeto
 - [x] Tela de Login
-- [ ] Tela de Cadastro
+- [x] Tela de Cadastro
 - [ ] Dashboard Financeiro
 - [ ] Controle de Receitas
 - [ ] Controle de Despesas
