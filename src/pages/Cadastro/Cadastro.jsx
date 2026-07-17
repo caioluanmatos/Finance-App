@@ -19,14 +19,16 @@ function Cadastro() {
                 } else {
                     alert ('As senhas sim coincidem!')
                 }
+
+                setNome("")
+                setEmail("")
+                setSenha("")
+                setConfirmarSenha("")
                         
                     
                 
 
-                console.log(nome)
-                console.log(email)
-                console.log(senha)
-                console.log(confirmarSenha)
+                
 }
             
 
