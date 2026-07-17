@@ -1,6 +1,7 @@
 import './Login.css'
 import { FaUser , FaLock } from 'react-icons/fa'
 import logo from '../../assets/images/Logo/logoapp.png'
+import { Link } from 'react-router-dom'
 
 function Login (){
     return (
@@ -60,7 +61,7 @@ function Login (){
                     <div className="register-link">
                         <p>Não possui uma conta?</p>
 
-                            <a href="#">Criar conta</a>
+                            <Link to="/cadastro">Criar conta</Link>
                     </div>
 
                     <hr />
