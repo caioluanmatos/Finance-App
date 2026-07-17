@@ -2,8 +2,25 @@ import './Login.css'
 import { FaUser , FaLock } from 'react-icons/fa'
 import logo from '../../assets/images/Logo/logoapp.png'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 function Login (){
+
+        const [email, setEmail] = useState("")
+        const [senha, setSenha] = useState("")
+
+
+                    function handleSubmit(event) {
+
+                         event.preventDefault()
+
+                            console.log(email)
+                            console.log(senha)
+
+
+                          
+}
+
     return (
 
         <main>
@@ -20,7 +37,7 @@ function Login (){
 
                 
 
-            <form>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor='email'>E-mail</label>
                 
                 <div className='input-group'>
@@ -30,6 +47,8 @@ function Login (){
                         type='email'
                         id='email'
                         placeholder='Digite seu e-mail'
+                        value={email}
+                        onChange={(e) => setEmail (e.target.value)}
                         />
                 </div>
 
@@ -43,6 +62,8 @@ function Login (){
                         type='password'
                         id='password'
                         placeholder='Digite sua senha'
+                        value={senha}
+                        onChangeCapture={(e) => setSenha (e.target.value)}
                         />
                 </div>
 
