@@ -3,11 +3,28 @@ import { FaUser , FaLock } from 'react-icons/fa'
 import logo from '../../assets/images/Logo/logoapp.png'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { useEffect } from "react";
 
 function Login (){
 
         const [email, setEmail] = useState("")
         const [senha, setSenha] = useState("")
+
+                    
+
+            useEffect(()=>{
+
+                    fetch("http://localhost:3000")
+                    .then((response) => response.text())
+                    .then((data) => {
+                    console.log(data);
+                    
+                });
+
+            },[])
+
+
+
 
 
                     function handleSubmit(event) {
@@ -44,7 +61,7 @@ function Login (){
                     <FaUser />
 
                     <input
-                        type='email'
+ type='email'
                         id='email'
                         placeholder='Digite seu e-mail'
                         value={email}
@@ -63,7 +80,7 @@ function Login (){
                         id='password'
                         placeholder='Digite sua senha'
                         value={senha}
-                        onChangeCapture={(e) => setSenha (e.target.value)}
+                        onChange={(e) => setSenha (e.target.value)}
                         />
                 </div>
 
