@@ -10,7 +10,7 @@ function Cadastro() {
             const [confirmarSenha, setConfirmarSenha] = useState('')
 
 
-    function handleSubmit(event) {
+            function handleSubmit(event) {
 
                 event.preventDefault()
 
@@ -18,12 +18,18 @@ function Cadastro() {
                      alert ('As senhas não coincidem!')
                 } else {
                     alert ('As senhas sim coincidem!')
+                    fetch("http://localhost:3000/cadastro", {
+                        method: "POST"
+})
                 }
 
                 setNome("")
                 setEmail("")
                 setSenha("")
                 setConfirmarSenha("")
+
+
+                    
                         
                     
                 
