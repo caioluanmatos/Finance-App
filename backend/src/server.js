@@ -4,9 +4,10 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors());
+app.use(express.json());
 
 app.get("/", (req, res) => {
-    res.send("Olá, mundo!");
+    res.send("Primeira Api");
 });
 
 app.listen(3000, () => {
@@ -17,7 +18,11 @@ app.listen(3000, () => {
 
 
 
-app.post("/cadastro",(req, res) => {
-        res.send("Cadastro recebido")
+app.post("/cadastro", (req, res) => {
 
-})
+    console.log(req.body);
+    console.log("Rota cadastro foi chamada");
+
+    res.send("Cadastro recebido");
+
+});

@@ -18,9 +18,34 @@ function Cadastro() {
                      alert ('As senhas não coincidem!')
                 } else {
                     alert ('As senhas sim coincidem!')
-                    fetch("http://localhost:3000/cadastro", {
-                        method: "POST"
-})
+                    console.log("Entrou no cadastro")
+
+                   fetch("http://localhost:3000/cadastro", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                     },
+                        body: JSON.stringify({
+                            nome,
+                            email,
+                            senha
+                             })
+
+                               })
+                    .then((response) => {
+                        console.log("Status:", response.status);
+                    return response.text();
+                    })
+                    .then((data) => {
+                        console.log("Resposta:", data);
+                    })
+                    .catch((error) => {
+                        console.error("Erro:", error);
+                    });
+                                    
+                                
+                                
+
                 }
 
                 setNome("")

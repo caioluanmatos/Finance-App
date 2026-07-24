@@ -2,8 +2,8 @@ import './Login.css'
 import { FaUser , FaLock } from 'react-icons/fa'
 import logo from '../../assets/images/Logo/logoapp.png'
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
-import { useEffect } from "react";
+import { useState, useEffect } from 'react'
+
 
 function Login (){
 
