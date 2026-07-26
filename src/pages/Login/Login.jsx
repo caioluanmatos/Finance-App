@@ -23,10 +23,6 @@ function Login (){
 
             },[])
 
-
-
-
-
                     function handleSubmit(event) {
 
                          event.preventDefault()
@@ -35,7 +31,30 @@ function Login (){
                             console.log(senha)
 
 
-                          
+                           fetch("http://localhost:3000/login", {
+                            method: "POST",
+                            headers: {
+                            "Content-Type": "application/json"
+                             },
+
+                            body: JSON.stringify({
+
+                             email,
+                            senha
+                            })
+                            })
+                            .then((response) => {
+                                    console.log("Status:", response.status);
+                            return response.text();
+                            })
+                            .then((data) => {
+                                console.log("Resposta:", data);
+                            })
+                            .catch((error) => {
+                                console.error("Erro:", error);
+                            });
+                            
+                        
 }
 
     return (
