@@ -1,134 +1,116 @@
-import './Login.css'
-import { FaUser , FaLock } from 'react-icons/fa'
-import logo from '../../assets/images/Logo/logoapp.png'
-import { Link } from 'react-router-dom'
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { FaUser, FaLock } from "react-icons/fa";
 
+import "./Login.css";
+import logo from "../../assets/images/Logo/logoapp.png";
 
-function Login (){
+function Login() {
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
 
-        const [email, setEmail] = useState("")
-        const [senha, setSenha] = useState("")
+    useEffect(() => {
+        fetch("http://localhost:3000")
+            .then((response) => response.text())
+            .then((data) => {
+                console.log(data);
+            });
+    }, []);
 
-                    
+    function handleSubmit(event) {
+        event.preventDefault();
 
-            useEffect(()=>{
+        console.log(email);
+        console.log(senha);
 
-                    fetch("http://localhost:3000")
-                    .then((response) => response.text())
-                    .then((data) => {
-                    console.log(data);
-                    
-                });
-
-            },[])
-
-                    function handleSubmit(event) {
-
-                         event.preventDefault()
-
-                            console.log(email)
-                            console.log(senha)
-
-
-                           fetch("http://localhost:3000/login", {
-                            method: "POST",
-                            headers: {
-                            "Content-Type": "application/json"
-                             },
-
-                            body: JSON.stringify({
-
-                             email,
-                            senha
-                            })
-                            })
-                            .then((response) => {
-                                    console.log("Status:", response.status);
-                            return response.text();
-                            })
-                            .then((data) => {
-                                console.log("Resposta:", data);
-                            })
-                            .catch((error) => {
-                                console.error("Erro:", error);
-                            });
-                            
-                        
-}
+        fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email,
+                senha,
+            }),
+        })
+            .then((response) => {
+                console.log("Status:", response.status);
+                return response.text();
+            })
+            .then((data) => {
+                console.log("Resposta:", data);
+            })
+            .catch((error) => {
+                console.error("Erro:", error);
+            });
+    }
 
     return (
-
         <main>
             <section>
+                <div className="logo-area">
+                    <img src={logo} alt="Logo Finance App" />
 
-                
-                    <div className="logo-area">
-                         <img src={logo} alt="Logo Finance App" />
+                    <h1>Finance App</h1>
 
-                            <h1>Finance App</h1>
-
-                            <p>Organize hoje. Conquiste amanhã.</p>
-                    </div>
-
-                
-
-            <form onSubmit={handleSubmit}>
-                <label htmlFor='email'>E-mail</label>
-                
-                <div className='input-group'>
-                    <FaUser />
-
-                    <input
- type='email'
-                        id='email'
-                        placeholder='Digite seu e-mail'
-                        value={email}
-                        onChange={(e) => setEmail (e.target.value)}
-                        />
+                    <p>Organize hoje. Conquiste amanhã.</p>
                 </div>
 
+                <form onSubmit={handleSubmit}>
+                    <label htmlFor="email">E-mail</label>
 
-                <label htmlFor='password'>Senha</label>
-                
-                <div className='input-group'>
-                    <FaLock />
+                    <div className="input-group">
+                        <FaUser />
 
-                    <input
-                        type='password'
-                        id='password'
-                        placeholder='Digite sua senha'
-                        value={senha}
-                        onChange={(e) => setSenha (e.target.value)}
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Digite seu e-mail"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            required
                         />
-                </div>
-
-
-                   <div className="remember-me">
-                         <label>
-                             <input type="checkbox" />
-                             Lembrar-me
-                            </label>
                     </div>
 
-                    <button type='submit'>
+                    <label htmlFor="password">Senha</label>
+
+                    <div className="input-group">
+                        <FaLock />
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Digite sua senha"
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                            required
+                        />
+                    </div>
+
+                    <div className="remember-me">
+                        <label>
+                            <input type="checkbox" />
+                            Lembrar-me
+                        </label>
+                    </div>
+
+                    <button type="submit">
                         Entrar
                     </button>
 
                     <div className="register-link">
                         <p>Não possui uma conta?</p>
 
-                            <Link to="/cadastro">Criar conta</Link>
+                        <Link to="/cadastro">
+                            Criar conta
+                        </Link>
                     </div>
 
                     <hr />
-            </form>
-
+                </form>
             </section>
-
-
         </main>
-    )
+    );
 }
 
-export default Login
+export default Login;

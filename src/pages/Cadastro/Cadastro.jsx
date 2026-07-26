@@ -1,135 +1,130 @@
-import { useState } from 'react'
-import './Cadastro.css'
-import { Link } from 'react-router-dom'
+import { useState } from "react";
+import { Link } from "react-router-dom";
+
+import "./Cadastro.css";
 
 function Cadastro() {
+    const [nome, setNome] = useState("");
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+    const [confirmarSenha, setConfirmarSenha] = useState("");
 
-            const [nome, setNome] = useState('')
-            const [email, setEmail] = useState('')
-            const [senha, setSenha] = useState('')
-            const [confirmarSenha, setConfirmarSenha] = useState('')
+    function handleSubmit(event) {
+        event.preventDefault();
 
+        if (senha !== confirmarSenha) {
+            alert("As senhas não coincidem!");
+            return;
+        }
 
-            function handleSubmit(event) {
+        console.log("Entrou no cadastro");
 
-                event.preventDefault()
+        fetch("http://localhost:3000/cadastro", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                nome,
+                email,
+                senha,
+            }),
+        })
+            .then((response) => {
+                console.log("Status:", response.status);
+                return response.text();
+            })
+            .then((data) => {
+                console.log("Resposta:", data);
 
-                if ( senha !== confirmarSenha) {
-                     alert ('As senhas não coincidem!')
-                } else {
-                    alert ('As senhas sim coincidem!')
-                    console.log("Entrou no cadastro")
+                alert("Cadastro realizado com sucesso!");
 
-                   fetch("http://localhost:3000/cadastro", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                     },
-                        body: JSON.stringify({
-                            nome,
-                            email,
-                            senha
-                             })
+                setNome("");
+                setEmail("");
+                setSenha("");
+                setConfirmarSenha("");
+            })
+            .catch((error) => {
+                console.error("Erro:", error);
+            });
+    }
 
-                               })
-                    .then((response) => {
-                        console.log("Status:", response.status);
-                    return response.text();
-                    })
-                    .then((data) => {
-                        console.log("Resposta:", data);
-                    })
-                    .catch((error) => {
-                        console.error("Erro:", error);
-                    });
-                                    
-                                
-                                
+    return (
+        <main>
+            <section>
+                <div className="cadastro">
+                    <h1>Cadastre-se</h1>
+                    <p>Preencha seus dados para criar sua conta.</p>
 
-                }
+                    <form onSubmit={handleSubmit}>
+                        <div className="input-group">
+                            <label htmlFor="nome">Nome</label>
 
-                setNome("")
-                setEmail("")
-                setSenha("")
-                setConfirmarSenha("")
-
-
-                    
-                        
-                    
-                
-
-                
-}
-            
-
-  return (
-    <main>
-      <section>
-            <div className='cadastro'>
-                <h1>Cadastre-se</h1>
-                <p>Preencha seus dados para criar sua conta.</p>
-
-            <form onSubmit={handleSubmit}>
-                <div className="input-group">
-                    <label htmlFor="nome">Nome</label>
-                    <input
-                        type="text"
-                        id="nome"
-                        placeholder="Digite seu nome"
-                        value={nome}
-                        onChange={(event) => setNome (event.target.value)}
-                        required
-                    />
-                </div>
-
-                <div className="input-group">
-                    <label htmlFor="email">E-mail</label>
-                     <input
-                        type="email"
-                        id="email"
-                        placeholder="Digite seu e-mail"
-                        value={email}
-                        onChange={(e)=> setEmail (e.target.value)}
-                        required
-                        />
-                </div>
-
-                <div className="input-group">
-                    <label htmlFor="password">Senha</label>
-                    <input
-                        type="password"
-                        id="password"
-                         placeholder="Digite sua senha"
-                         value={senha}
-                         onChange={(e) => setSenha (e.target.value)}
-                         required
-                        />
-                </div>
-
-                <div className="input-group">
-                    <label htmlFor="confirmPassword">Confirmar senha</label>
-                    <input
-                        type="password"
-                        id="confirmPassword"
-                        placeholder="Digite sua senha novamente"
-                        value={confirmarSenha}
-                        onChange={(e) => setConfirmarSenha(e.target.value)}
-                        required
-                        />
-                 </div>
-
-                    <button type="submit">Criar conta</button>
-            </form>
-                        <div className="login-link">
-                                <p>Já possui uma conta?</p>
-                                <Link to="/">Entrar</Link>
+                            <input
+                                type="text"
+                                id="nome"
+                                placeholder="Digite seu nome"
+                                value={nome}
+                                onChange={(e) => setNome(e.target.value)}
+                                required
+                            />
                         </div>
-            
-            </div>
-      </section>
-    </main>
-  )
+
+                        <div className="input-group">
+                            <label htmlFor="email">E-mail</label>
+
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="Digite seu e-mail"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="password">Senha</label>
+
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Digite sua senha"
+                                value={senha}
+                                onChange={(e) => setSenha(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        <div className="input-group">
+                            <label htmlFor="confirmPassword">
+                                Confirmar senha
+                            </label>
+
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                placeholder="Digite sua senha novamente"
+                                value={confirmarSenha}
+                                onChange={(e) =>
+                                    setConfirmarSenha(e.target.value)
+                                }
+                                required
+                            />
+                        </div>
+
+                        <button type="submit">Criar conta</button>
+                    </form>
+
+                    <div className="login-link">
+                        <p>Já possui uma conta?</p>
+
+                        <Link to="/">Entrar</Link>
+                    </div>
+                </div>
+            </section>
+        </main>
+    );
 }
 
-export default Cadastro
+export default Cadastro;

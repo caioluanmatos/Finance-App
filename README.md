@@ -89,9 +89,9 @@ finance-app/
 
 # 🚧 Funcionalidades em Desenvolvimento
 
-- [ ] Login de usuários
-- [ ] Criptografia de senhas (bcrypt)
-- [ ] Autenticação com JWT
+- [x] Login de usuários
+- [x] Criptografia de senhas (bcrypt)
+- [x] Autenticação com JWT
 - [ ] Dashboard Financeiro
 - [ ] Cadastro de Receitas
 - [ ] Cadastro de Despesas
