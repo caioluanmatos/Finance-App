@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const connection = require("./database");
+const bcrypt = require("bcrypt");
 
 const app = express();
 
@@ -19,12 +20,14 @@ app.get("/", (req, res) => {
 // Cadastro
 // ====================
 
-app.post("/cadastro", (req, res) => {
+app.post("/cadastro",  async (req, res) => {
     const { nome, email, senha } = req.body;
+    const senhaHash = await bcrypt.hash(senha, 10);
+    
 
     const sql = "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
 
-    connection.query(sql, [nome, email, senha], (error, result) => {
+    connection.query(sql, [nome, email, senhaHash], (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).send("Erro ao cadastrar");
@@ -40,18 +43,29 @@ app.post("/cadastro", (req, res) => {
 // Login
 // ====================
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     const { email, senha } = req.body;
 
-    const sql = "SELECT * FROM usuarios WHERE email = ? AND senha = ?";
+    const sql = "SELECT * FROM usuarios WHERE email = ?";
 
-    connection.query(sql, [email, senha], (error, result) => {
+    connection.query(sql, [email], async (error, result) => {
         if (error) {
             console.log(error);
             return res.status(500).send("Erro ao fazer login");
         }
 
         if (result.length === 0) {
+            return res.send("E-mail ou senha inválidos!");
+        }
+
+        const usuario = result[0];
+
+        const senhaCorreta = await bcrypt.compare(
+            senha,
+            usuario.senha
+        );
+
+        if (!senhaCorreta) {
             return res.send("E-mail ou senha inválidos!");
         }
 
