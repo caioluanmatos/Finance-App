@@ -202,3 +202,66 @@ app.get(
 app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000");
 });
+
+
+// ====================
+// Criar transação
+// ====================
+
+app.post("/transacoes", verificarToken, (req, res) => {
+    const { descricao, valor, tipo, data } = req.body;
+
+    const usuarioId = req.usuarioId;
+
+    const sql = `
+        INSERT INTO transacoes
+        (descricao, valor, tipo, data, usuario_id)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+    connection.query(
+        sql,
+        [descricao, valor, tipo, data, usuarioId],
+        (error, result) => {
+            if (error) {
+                console.log(error);
+
+                return res.status(500).json({
+                    mensagem: "Erro ao cadastrar transação!"
+                });
+            }
+
+            return res.status(201).json({
+                mensagem: "Transação cadastrada com sucesso!",
+                transacaoId: result.insertId
+            });
+        }
+    );
+});
+
+
+// ====================
+// Listar transações
+// ====================
+
+app.get("/transacoes", verificarToken, (req, res) => {
+    const usuarioId = req.usuarioId;
+
+    const sql = `
+        SELECT * FROM transacoes
+        WHERE usuario_id = ?
+        ORDER BY data DESC
+    `;
+
+    connection.query(sql, [usuarioId], (error, result) => {
+        if (error) {
+            console.log(error);
+
+            return res.status(500).json({
+                mensagem: "Erro ao buscar transações!"
+            });
+        }
+
+        return res.status(200).json(result);
+    });
+});
