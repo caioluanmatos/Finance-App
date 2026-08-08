@@ -35,10 +35,13 @@ function Login() {
         })
             .then((response) => {
                 console.log("Status:", response.status);
-                return response.text();
+                return response.json();
             })
             .then((data) => {
                 console.log("Resposta:", data);
+
+                localStorage.setItem("token",data.token);
+                console.log("token salvo")
             })
             .catch((error) => {
                 console.error("Erro:", error);

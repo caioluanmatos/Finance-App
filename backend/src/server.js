@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const connection = require("./database");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const app = express();
 
@@ -55,7 +56,7 @@ app.post("/login", async (req, res) => {
         }
 
         if (result.length === 0) {
-            return res.send("E-mail ou senha inválidos!");
+            return res.status(401).send("E-mail ou senha inválidos!");
         }
 
         const usuario = result[0];
@@ -66,10 +67,19 @@ app.post("/login", async (req, res) => {
         );
 
         if (!senhaCorreta) {
-            return res.send("E-mail ou senha inválidos!");
+            return res.status(401).send("E-mail ou senha inválidos!");
         }
 
-        res.send("Login realizado com sucesso!");
+        const token = jwt.sign(
+            { id: usuario.id },
+            "minha_chave_secreta",
+            { expiresIn: "1h" }
+        );
+
+        res.json({
+            mensagem: "Login realizado com sucesso!",
+            token: token
+        });
     });
 });
 
