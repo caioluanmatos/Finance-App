@@ -3,6 +3,7 @@ const cors = require("cors");
 const connection = require("./database");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const app = express();
 
@@ -72,7 +73,7 @@ app.post("/login", async (req, res) => {
 
         const token = jwt.sign(
             { id: usuario.id },
-            "minha_chave_secreta",
+             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
 
@@ -111,7 +112,7 @@ function verificarToken(req, res, next) {
     try {
         const decoded = jwt.verify(
             token,
-            "minha_chave_secreta"
+            process.env.JWT_SECRET
         );
 
         req.usuarioId = decoded.id;
