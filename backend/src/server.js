@@ -90,3 +90,44 @@ app.post("/login", async (req, res) => {
 app.listen(3000, () => {
     console.log("Servidor rodando na porta 3000");
 });
+
+
+
+//==============
+//  verificar se o usuário enviou um JWT
+//==============
+
+function verificarToken(req, res, next) {
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader) {
+        return res.status(401).json({
+            mensagem: "Token não enviado!"
+        });
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    try {
+        const decoded = jwt.verify(
+            token,
+            "minha_chave_secreta"
+        );
+
+        req.usuarioId = decoded.id;
+
+        next();
+
+    } catch (error) {
+        return res.status(401).json({
+            mensagem: "Token inválido ou expirado!"
+        });
+    }
+}
+
+app.get("/perfil", verificarToken, (req, res) => {
+    res.json({
+        mensagem: "Acesso autorizado!",
+        usuarioId: req.usuarioId
+    });
+});
