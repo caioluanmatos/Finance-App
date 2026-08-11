@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { FaUser, FaLock } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
 
 import "./Login.css";
 import logo from "../../assets/images/Logo/logoapp.png";
 
 function Login() {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
@@ -35,13 +37,21 @@ function Login() {
         })
             .then((response) => {
                 console.log("Status:", response.status);
+
+                if (!response.ok) {
+                    throw new Error("E-mail ou senha inválidos");
+                }
+
                 return response.json();
             })
             .then((data) => {
                 console.log("Resposta:", data);
 
-                localStorage.setItem("token",data.token);
-                console.log("token salvo")
+                localStorage.setItem("token", data.token);
+
+                console.log("Token salvo");
+
+                navigate("/dashboard");
             })
             .catch((error) => {
                 console.error("Erro:", error);
