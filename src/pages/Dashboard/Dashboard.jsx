@@ -1,5 +1,6 @@
 import "./Dashboard.css";
-import { useEffect, useState } from "react";;
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
     const [transacoes, setTransacoes] = useState([]);
@@ -71,7 +72,7 @@ function Dashboard() {
                         Dashboard
                     </a>
 
-                    <a href="#">Transações</a>
+                    <a href="/transacoes">Transações</a>
                     <a href="#">Receitas</a>
                     <a href="#">Despesas</a>
                     <a href="#">Metas</a>
