@@ -130,3 +130,292 @@
         grid-column: 1;
     }
 }
+
+
+.transacoes-page {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    padding: 40px 24px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0f172a,
+            #1e1b4b,
+            #4c1d95
+        );
+
+    color: #f8fafc;
+}
+
+/* Cabeçalho principal */
+
+.transacoes-page > h1 {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto 6px;
+
+    font-size: 34px;
+    font-weight: 700;
+}
+
+.transacoes-page > p {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto 28px;
+
+    color: #94a3b8;
+
+    font-size: 15px;
+}
+
+/* Formulário */
+
+.transacoes-form {
+    width: 100%;
+    max-width: 1100px;
+
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+
+    margin: 0 auto;
+    padding: 28px;
+
+    background: rgba(30, 41, 59, 0.95);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.28);
+}
+
+/* Lista */
+
+.transacoes-lista {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 32px auto 0;
+    padding: 28px;
+
+    background: rgba(30, 41, 59, 0.95);
+
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.28);
+}
+
+/* Cabeçalho da lista */
+
+.transacoes-lista-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.transacoes-lista-header h2 {
+    margin: 0;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.transacoes-lista-header p {
+    margin: 6px 0 0;
+
+    color: #94a3b8;
+}
+
+/* Itens */
+
+.transacoes-items {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.transacao-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding: 16px 18px;
+
+    background: #0f172a;
+
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 14px;
+
+    transition: 0.2s;
+}
+
+.transacao-item:hover {
+    transform: translateY(-2px);
+
+    border-color: rgba(139, 92, 246, 0.25);
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.20);
+}
+
+/* Info */
+
+.transacao-info {
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+}
+
+.transacao-info > div:last-child {
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+.transacao-info strong {
+    font-size: 15px;
+}
+
+.transacao-info span {
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+/* Ícone */
+
+.transacao-icon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 12px;
+
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.transacao-icon.receita {
+    color: #4ade80;
+
+    background: rgba(34, 197, 94, 0.12);
+}
+
+.transacao-icon.despesa {
+    color: #f87171;
+
+    background: rgba(239, 68, 68, 0.12);
+}
+
+/* Valores */
+
+.transacao-valor {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.transacao-valor.receita {
+    color: #4ade80;
+}
+
+.transacao-valor.despesa {
+    color: #f87171;
+}
+
+/* Responsivo */
+
+@media (max-width: 760px) {
+    .transacoes-page {
+        padding: 24px 16px;
+    }
+
+    .transacoes-form {
+        grid-template-columns: 1fr;
+
+        padding: 20px;
+    }
+
+    .transacoes-lista {
+        padding: 20px;
+    }
+
+    .transacao-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+
+
+
+.transacoes-topo {
+    width: 100%;
+    max-width: 1100px;
+
+    margin: 0 auto 28px;
+}
+
+.btn-voltar {
+    display: inline-flex;
+    align-items: center;
+
+    margin-bottom: 24px;
+    padding: 10px 16px;
+
+    color: #c4b5fd;
+    background: rgba(124, 58, 237, 0.12);
+
+    border: 1px solid rgba(139, 92, 246, 0.25);
+    border-radius: 10px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+.btn-voltar:hover {
+    color: #ffffff;
+    background: #7c3aed;
+
+    transform: translateX(-3px);
+}
+
+.transacoes-topo h1 {
+    margin: 0 0 6px;
+
+    font-size: 34px;
+    color: #f8fafc;
+}
+
+.transacoes-topo p {
+    margin: 0;
+
+    color: #94a3b8;
+    font-size: 15px;
+}
