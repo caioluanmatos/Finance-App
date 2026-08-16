@@ -1,5 +1,4 @@
 
-import { response } from "express";
 import "./Transacoes.css";
 import { useState } from "react";
 
