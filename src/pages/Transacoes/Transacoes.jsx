@@ -58,10 +58,21 @@ function Transacoes() {
 
                 return response.json();
             })
-            .then((data) => {
-                console.log("Resposta:", data);
+            .then((dataResposta) => {
+                console.log("Resposta:", dataResposta);
 
                 alert("Transação adicionada com sucesso!");
+
+                setTransacoes((listaAtual) => [
+                    {
+                        id: dataResposta.transacaoId,
+                        descricao,
+                        valor,
+                        tipo,
+                        data
+                    },
+                    ...listaAtual
+                ]);
 
                 setDescricao("");
                 setValor("");
@@ -75,6 +86,42 @@ function Transacoes() {
             });
     }
 
+    function handleExcluir(id) {
+        fetch(`http://localhost:3000/transacoes/${id}`, {
+            method: "DELETE",
+            headers: {
+                Authorization:
+                    "Bearer " + localStorage.getItem("token")
+            }
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        "Erro ao excluir transação"
+                    );
+                }
+
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Resposta:", data);
+
+                alert("Transação excluída com sucesso!");
+
+                setTransacoes((listaAtual) =>
+                    listaAtual.filter(
+                        (transacao) =>
+                            transacao.id !== id
+                    )
+                );
+            })
+            .catch((error) => {
+                console.error("Erro:", error);
+
+                alert("Erro ao excluir transação");
+            });
+    }
+
     return (
         <div className="transacoes-page">
 
@@ -83,7 +130,7 @@ function Transacoes() {
                     to="/dashboard"
                     className="btn-voltar"
                 >
-                     Voltar
+                    Voltar
                 </Link>
 
                 <div>
@@ -246,6 +293,17 @@ function Transacoes() {
                                         }
                                     )}
                                 </strong>
+
+                                <button
+                                    className="btn-excluir"
+                                    onClick={() =>
+                                        handleExcluir(
+                                            transacao.id
+                                        )
+                                    }
+                                >
+                                    Excluir
+                                </button>
 
                             </div>
                         ))}

@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const connection = require("./database");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const connection = require("./database");
 
 require("dotenv").config();
 
@@ -10,6 +10,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+
 
 // ====================
 // Middleware JWT
@@ -26,12 +27,6 @@ function verificarToken(req, res, next) {
 
     const token = authHeader.split(" ")[1];
 
-    if (!token) {
-        return res.status(401).json({
-            mensagem: "Formato do token inválido!"
-        });
-    }
-
     try {
         const decoded = jwt.verify(
             token,
@@ -41,12 +36,14 @@ function verificarToken(req, res, next) {
         req.usuarioId = decoded.id;
 
         next();
+
     } catch (error) {
         return res.status(401).json({
             mensagem: "Token inválido ou expirado!"
         });
     }
 }
+
 
 // ====================
 // Rota inicial
@@ -56,6 +53,7 @@ app.get("/", (req, res) => {
     res.send("Primeira API");
 });
 
+
 // ====================
 // Cadastro
 // ====================
@@ -63,48 +61,44 @@ app.get("/", (req, res) => {
 app.post("/cadastro", async (req, res) => {
     const { nome, email, senha } = req.body;
 
-    if (!nome || !email || !senha) {
-        return res.status(400).json({
-            mensagem: "Nome, e-mail e senha são obrigatórios!"
-        });
-    }
-
     try {
         const senhaHash = await bcrypt.hash(senha, 10);
 
-        const sql =
-            "INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)";
+        const sql = `
+            INSERT INTO usuarios
+            (nome, email, senha)
+            VALUES (?, ?, ?)
+        `;
 
         connection.query(
             sql,
             [nome, email, senhaHash],
             (error, result) => {
+
                 if (error) {
                     console.log(error);
 
                     return res.status(500).json({
-                        mensagem: "Erro ao cadastrar usuário!"
+                        mensagem: "Erro ao cadastrar usuário"
                     });
                 }
 
-                console.log(
-                    "Usuário salvo com ID:",
-                    result.insertId
-                );
-
                 return res.status(201).json({
-                    mensagem: "Usuário cadastrado com sucesso!"
+                    mensagem: "Usuário cadastrado com sucesso!",
+                    usuarioId: result.insertId
                 });
             }
         );
+
     } catch (error) {
         console.log(error);
 
         return res.status(500).json({
-            mensagem: "Erro ao criptografar a senha!"
+            mensagem: "Erro ao cadastrar usuário"
         });
     }
 });
+
 
 // ====================
 // Login
@@ -113,24 +107,21 @@ app.post("/cadastro", async (req, res) => {
 app.post("/login", (req, res) => {
     const { email, senha } = req.body;
 
-    if (!email || !senha) {
-        return res.status(400).json({
-            mensagem: "E-mail e senha são obrigatórios!"
-        });
-    }
-
-    const sql =
-        "SELECT * FROM usuarios WHERE email = ?";
+    const sql = `
+        SELECT * FROM usuarios
+        WHERE email = ?
+    `;
 
     connection.query(
         sql,
         [email],
         async (error, result) => {
+
             if (error) {
                 console.log(error);
 
                 return res.status(500).json({
-                    mensagem: "Erro ao fazer login!"
+                    mensagem: "Erro ao fazer login"
                 });
             }
 
@@ -142,74 +133,59 @@ app.post("/login", (req, res) => {
 
             const usuario = result[0];
 
-            try {
-                const senhaCorreta =
-                    await bcrypt.compare(
-                        senha,
-                        usuario.senha
-                    );
+            const senhaCorreta = await bcrypt.compare(
+                senha,
+                usuario.senha
+            );
 
-                if (!senhaCorreta) {
-                    return res.status(401).json({
-                        mensagem: "E-mail ou senha inválidos!"
-                    });
-                }
-
-                const token = jwt.sign(
-                    {
-                        id: usuario.id
-                    },
-                    process.env.JWT_SECRET,
-                    {
-                        expiresIn: "1h"
-                    }
-                );
-
-                return res.status(200).json({
-                    mensagem: "Login realizado com sucesso!",
-                    token
-                });
-            } catch (error) {
-                console.log(error);
-
-                return res.status(500).json({
-                    mensagem: "Erro ao validar a senha!"
+            if (!senhaCorreta) {
+                return res.status(401).json({
+                    mensagem: "E-mail ou senha inválidos!"
                 });
             }
+
+            const token = jwt.sign(
+                {
+                    id: usuario.id
+                },
+                process.env.JWT_SECRET,
+                {
+                    expiresIn: "1h"
+                }
+            );
+
+            return res.status(200).json({
+                mensagem: "Login realizado com sucesso!",
+                token
+            });
         }
     );
 });
+
 
 // ====================
 // Perfil protegido
 // ====================
 
-app.get(
-    "/perfil",
-    verificarToken,
-    (req, res) => {
-        return res.status(200).json({
-            mensagem: "Acesso autorizado!",
-            usuarioId: req.usuarioId
-        });
-    }
-);
-
-// ====================
-// Servidor
-// ====================
-
-app.listen(3000, () => {
-    console.log("Servidor rodando na porta 3000");
+app.get("/perfil", verificarToken, (req, res) => {
+    res.json({
+        mensagem: "Acesso autorizado!",
+        usuarioId: req.usuarioId
+    });
 });
 
 
 // ====================
-// Criar transação
+// Cadastrar transação
 // ====================
 
 app.post("/transacoes", verificarToken, (req, res) => {
-    const { descricao, valor, tipo, data } = req.body;
+    const {
+        descricao,
+        valor,
+        tipo,
+        data
+    } = req.body;
 
     const usuarioId = req.usuarioId;
 
@@ -221,8 +197,15 @@ app.post("/transacoes", verificarToken, (req, res) => {
 
     connection.query(
         sql,
-        [descricao, valor, tipo, data, usuarioId],
+        [
+            descricao,
+            valor,
+            tipo,
+            data,
+            usuarioId
+        ],
         (error, result) => {
+
             if (error) {
                 console.log(error);
 
@@ -253,15 +236,75 @@ app.get("/transacoes", verificarToken, (req, res) => {
         ORDER BY data DESC
     `;
 
-    connection.query(sql, [usuarioId], (error, result) => {
-        if (error) {
-            console.log(error);
+    connection.query(
+        sql,
+        [usuarioId],
+        (error, result) => {
 
-            return res.status(500).json({
-                mensagem: "Erro ao buscar transações!"
-            });
+            if (error) {
+                console.log(error);
+
+                return res.status(500).json({
+                    mensagem: "Erro ao buscar transações!"
+                });
+            }
+
+            return res.status(200).json(result);
         }
+    );
+});
 
-        return res.status(200).json(result);
-    });
+
+// ====================
+// Excluir transação
+// ====================
+
+app.delete(
+    "/transacoes/:id",
+    verificarToken,
+    (req, res) => {
+
+        const id = req.params.id;
+        const usuarioId = req.usuarioId;
+
+        const sql = `
+            DELETE FROM transacoes
+            WHERE id = ?
+            AND usuario_id = ?
+        `;
+
+        connection.query(
+            sql,
+            [id, usuarioId],
+            (error, result) => {
+
+                if (error) {
+                    console.log(error);
+
+                    return res.status(500).json({
+                        mensagem: "Erro ao excluir transação"
+                    });
+                }
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        mensagem: "Transação não encontrada"
+                    });
+                }
+
+                return res.status(200).json({
+                    mensagem: "Transação excluída com sucesso!"
+                });
+            }
+        );
+    }
+);
+
+
+// ====================
+// Servidor
+// ====================
+
+app.listen(3000, () => {
+    console.log("Servidor rodando na porta 3000");
 });
