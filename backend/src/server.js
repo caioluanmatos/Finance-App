@@ -300,6 +300,61 @@ app.delete(
     }
 );
 
+app.put("/transacoes/:id", verificarToken, (req, res) => {
+
+    const id = req.params.id;
+
+    const {
+        descricao,
+        valor,
+        tipo,
+        data
+    } = req.body;
+
+    const usuarioId = req.usuarioId;
+
+    const sql = `
+       UPDATE transacoes
+        SET descricao = ?, valor = ?, tipo = ?, data = ?
+        WHERE id = ?
+            AND usuario_id = ?
+        `;
+
+        connection.query(
+        sql,
+    [
+        descricao,
+        valor,
+        tipo,
+        data,
+        id,
+        usuarioId
+    ],
+        (error, result) => {
+
+            if (error){
+                console.log(error);
+
+                return res.status(500).json({
+                    mensagem: "erro ao editar transação"
+                });
+            }
+
+            if (result.affectedRows === 0){
+                return res.status(404).json({
+                    mensagem:"Transação não encontrada"
+                });
+            }
+
+                return res.status(200).json({
+                    mensagem:"Transação editada com sucesso!"
+                });
+
+
+    }
+);
+    
+});
 
 // ====================
 // Servidor
