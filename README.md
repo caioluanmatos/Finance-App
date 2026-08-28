@@ -1,68 +1,144 @@
 # 💰 Finance App
 
-Uma aplicação **Full Stack** desenvolvida com **React**, **Node.js**, **Express** e **MySQL**, criada para auxiliar no controle financeiro pessoal.
+Aplicação Full Stack para gerenciamento de finanças pessoais, desenvolvida com **React, Node.js, Express e MySQL**.
 
-> 🚧 Projeto em desenvolvimento.
+O Finance App permite que usuários controlem receitas e despesas, acompanhem o saldo financeiro, criem metas, gerenciem o perfil e recuperem o acesso à conta por meio de código enviado por e-mail.
 
----
-
-# 📌 Sobre o Projeto
-
-O **Finance App** nasceu com o objetivo de praticar o desenvolvimento de aplicações Full Stack, integrando Front-end, Back-end e Banco de Dados em um único projeto.
-
-A aplicação permitirá que o usuário organize sua vida financeira de maneira simples, registrando receitas, despesas e acompanhando sua evolução financeira.
+> **Organize hoje. Conquiste amanhã.**
 
 ---
 
-# 🚀 Tecnologias Utilizadas
+## 🚀 Funcionalidades
 
-## Front-end
+### 🔐 Autenticação
+
+- Cadastro de usuários
+- Login com e-mail e senha
+- Login com Google
+- Autenticação utilizando JWT
+- Senhas criptografadas com bcrypt
+- Rotas protegidas
+- Logout
+
+### 🔑 Recuperação de senha
+
+- Recuperação de senha por e-mail
+- Envio de código de 6 dígitos
+- Código com tempo de expiração
+- Validação do código
+- Criação de nova senha
+- Nova senha criptografada com bcrypt
+- Código invalidado após a redefinição
+
+### 📊 Dashboard
+
+- Visualização geral das finanças
+- Total de receitas
+- Total de despesas
+- Saldo atual
+- Gráficos financeiros
+- Filtro por período
+- Informações do usuário logado
+
+### 💳 Transações
+
+CRUD completo de transações:
+
+- Criar transação
+- Listar transações
+- Editar transação
+- Excluir transação
+- Separação entre receitas e despesas
+- Transações vinculadas individualmente a cada usuário
+
+### 💰 Receitas
+
+- Listagem das receitas
+- Histórico de receitas
+- Cálculo do total recebido
+
+### 💸 Despesas
+
+- Listagem das despesas
+- Histórico de despesas
+- Cálculo do total gasto
+
+### 🎯 Metas financeiras
+
+- Criar metas
+- Editar metas
+- Excluir metas
+- Definir valor da meta
+- Informar valor atual
+- Acompanhar progresso
+
+### 👤 Perfil
+
+- Visualização dos dados do usuário
+- Nome
+- E-mail
+- Foto do Google, quando disponível
+- Alteração de senha
+- Personalização de tema
+
+---
+
+# 🛠️ Tecnologias utilizadas
+
+## Frontend
 
 - React
 - Vite
-- JavaScript (ES6+)
-- HTML5
-- CSS3
+- JavaScript
+- CSS
 - React Router DOM
 - React Icons
+- Chart.js
+- React Chart.js 2
+- Google OAuth
 
-## Back-end
+## Backend
 
 - Node.js
 - Express
+- JWT
+- bcrypt
+- Nodemailer
+- Google Auth Library
 - CORS
- - Python
+- dotenv
 
-## Banco de Dados
+## Banco de dados
 
 - MySQL
-- MySQL Workbench
-- mysql2
 
 ---
 
-# 📂 Estrutura do Projeto
+# 🏗️ Arquitetura
+
+```text
+Finance App
+│
+├── Frontend
+│   └── React + Vite
+│
+├── Backend
+│   └── Node.js + Express
+│
+└── Banco de Dados
+    └── MySQL
+```
+
+O frontend se comunica com uma API REST desenvolvida em Node.js e Express.
+
+A API é responsável pela autenticação, gerenciamento dos usuários, transações, metas e recuperação de senha.
+
+---
+
+# 📂 Estrutura do projeto
 
 ```text
 finance-app/
-│
-├── frontend/
-│   ├── src/
-│   │
-│   ├── assets/
-│   ├── components/
-│   ├── pages/
-│   │   ├── Login/
-│   │   ├── Cadastro/
-│   │   ├── Dashboard/
-│   │   ├── Receitas/
-│   │   ├── Despesas/
-│   │   ├── Metas/
-│   │   └── Perfil/
-│   │
-│   ├── App.jsx
-│   ├── main.jsx
-│   └── index.css
 │
 ├── backend/
 │   ├── src/
@@ -70,117 +146,314 @@ finance-app/
 │   │   └── server.js
 │   │
 │   ├── package.json
-│   └── node_modules/
+│   └── .env
 │
+├── src/
+│   ├── assets/
+│   │
+│   ├── pages/
+│   │   ├── Cadastro/
+│   │   ├── Dashboard/
+│   │   ├── Despesas/
+│   │   ├── Login/
+│   │   ├── Metas/
+│   │   ├── Perfil/
+│   │   ├── Receitas/
+│   │   ├── Recuperacao/
+│   │   └── Transacoes/
+│   │
+│   ├── routes/
+│   │   └── AppRoutes.jsx
+│   │
+│   ├── App.jsx
+│   └── main.jsx
+│
+├── package.json
 └── README.md
 ```
 
 ---
 
-# ✅ Funcionalidades Implementadas
+# 🔒 Segurança
 
-- ✔ Tela de Login
-- ✔ Tela de Cadastro
-- ✔ API REST com Express
-- ✔ Comunicação React ↔ Express
-- ✔ Integração com MySQL
-- ✔ Cadastro de usuários persistido no banco de dados
+O projeto utiliza:
 
----
+- JWT para autenticação
+- bcrypt para hash das senhas
+- Middleware de autenticação
+- Rotas protegidas
+- Validação de usuário nas operações
+- Variáveis de ambiente para informações sensíveis
+- Código temporário para recuperação de senha
 
-# 🚧 Funcionalidades em Desenvolvimento
-
-- [x] Login de usuários
-- [x] Criptografia de senhas (bcrypt)
-- [x] Autenticação com JWT
-- [x] Dashboard Financeiro
-- [x] Cadastro de Receitas
-- [x] Cadastro de Despesas
-- [x] Metas Financeiras
-- [x] Perfil do Usuário
-- [x] Gráficos Financeiros
-- [x] Tema Claro/Escuro
-- [x] Responsividade
+As credenciais e chaves privadas não são armazenadas no repositório.
 
 ---
 
-# 🗄️ Banco de Dados
+# 🔑 Variáveis de ambiente
 
-### Banco
+Crie um arquivo:
 
-```sql
-finance_app
+```text
+backend/.env
 ```
 
-### Tabela
+Exemplo:
 
-```sql
+```env
+JWT_SECRET=sua_chave_jwt
+
+GOOGLE_CLIENT_ID=seu_google_client_id
+
+EMAIL_USER=seu_email
+
+EMAIL_PASS=sua_senha_de_aplicativo
+```
+
+> ⚠️ Nunca envie o arquivo `.env` para o GitHub.
+
+---
+
+# ⚙️ Como executar o projeto
+
+## 1. Clone o repositório
+
+```bash
+git clone SEU_LINK_DO_REPOSITORIO
+```
+
+Entre na pasta:
+
+```bash
+cd finance-app
+```
+
+---
+
+## 2. Instale as dependências do frontend
+
+```bash
+npm install
+```
+
+Execute:
+
+```bash
+npm run dev
+```
+
+O frontend normalmente ficará disponível em:
+
+```text
+http://localhost:5173
+```
+
+---
+
+## 3. Configure o backend
+
+Abra outro terminal:
+
+```bash
+cd backend
+```
+
+Instale as dependências:
+
+```bash
+npm install
+```
+
+Execute:
+
+```bash
+node src/server.js
+```
+
+API:
+
+```text
+http://localhost:3000
+```
+
+---
+
+# 🗄️ Banco de dados
+
+O projeto utiliza MySQL.
+
+As principais entidades utilizadas são:
+
+```text
 usuarios
+transacoes
+metas
 ```
 
-### Estrutura
-
-| Campo | Tipo |
-|--------|------|
-| id | INT |
-| nome | VARCHAR(100) |
-| email | VARCHAR(100) |
-| senha | VARCHAR(255) |
+Cada transação e meta é associada ao usuário responsável, evitando que usuários tenham acesso aos dados financeiros de outras contas.
 
 ---
 
-# 🎯 Objetivo de Aprendizado
+# 🔄 Fluxo de autenticação
 
-Durante o desenvolvimento deste projeto estou praticando conceitos importantes de desenvolvimento Full Stack, como:
-
-- React
-- Python
-- Componentização
-- React Router
-- Hooks
-- Consumo de API REST
-- Fetch API
-- Node.js
-- Express
-- MySQL
-- SQL
-- Integração Front-end + Back-end
-- Organização de código
-- Boas práticas de desenvolvimento
-
----
-
-# 📚 O que aprendi até o momento
-
-- Comunicação entre Front-end e Back-end
-- Métodos HTTP (GET e POST)
-- API REST
-- Fetch API
-- JSON
-- Express
-- MySQL
-- SQL
- - Python
-- Persistência de dados
-- Integração React + Node.js + MySQL
+```text
+Usuário
+   ↓
+Login
+   ↓
+API
+   ↓
+Validação da senha
+   ↓
+JWT
+   ↓
+Frontend
+   ↓
+Rotas protegidas
+```
 
 ---
 
-# 🔮 Próximas Etapas
+# 🔐 Fluxo de recuperação de senha
 
-- Implementar autenticação de usuários
-- Criptografar senhas
-- Criar Dashboard Financeiro
-- Desenvolver sistema completo de receitas e despesas
-- Criar gráficos financeiros
-- Publicar a aplicação
+```text
+Esqueceu sua senha?
+        ↓
+Digita o e-mail
+        ↓
+Código enviado por e-mail
+        ↓
+Validação do código
+        ↓
+Nova senha
+        ↓
+bcrypt
+        ↓
+Senha atualizada no MySQL
+        ↓
+Login
+```
 
 ---
 
-# 👨‍💻 Desenvolvedor
+# 📡 Principais endpoints da API
+
+### Autenticação
+
+```text
+POST /cadastro
+POST /login
+POST /login/google
+```
+
+### Recuperação de senha
+
+```text
+POST /esqueci-senha/enviar-codigo
+POST /esqueci-senha/verificar-codigo
+POST /esqueci-senha/redefinir
+```
+
+### Perfil
+
+```text
+GET /perfil
+PUT /perfil/senha
+```
+
+### Transações
+
+```text
+POST   /transacoes
+GET    /transacoes
+PUT    /transacoes/:id
+DELETE /transacoes/:id
+```
+
+### Metas
+
+```text
+POST   /metas
+GET    /metas
+PUT    /metas/:id
+DELETE /metas/:id
+```
+
+---
+
+# 📱 Responsividade
+
+A interface foi desenvolvida pensando em diferentes tamanhos de tela, mantendo a identidade visual do Finance App.
+
+---
+
+# 🎨 Interface
+
+O Finance App utiliza uma interface moderna em tons escuros com detalhes em roxo.
+
+Também possui personalização de tema através da página de perfil.
+
+---
+
+# 📈 Próximas evoluções
+
+A versão web principal está concluída.
+
+Possíveis evoluções:
+
+- Deploy do frontend
+- Deploy da API
+- Banco de dados em produção
+- Melhorias adicionais de segurança
+- Testes automatizados
+- Versão mobile
+
+---
+
+# 📱 Finance App Mobile
+
+Uma versão mobile poderá utilizar a mesma API REST criada para a aplicação web.
+
+```text
+Finance App Web
+       │
+       │
+       ▼
+     API REST
+       ▲
+       │
+       │
+Finance App Mobile
+```
+
+---
+
+# 👨‍💻 Autor
 
 **Caio Luan**
 
-Desenvolvedor Full Stack com foco em aplicações web utilizando **React**, **Node.js**, **Express** e **MySQL**.
+Desenvolvedor Full Stack com foco em desenvolvimento Web e Mobile.
 
-Este projeto faz parte do meu portfólio e demonstra meus conhecimentos em desenvolvimento Front-end, Back-end, APIs REST e Banco de Dados.
+---
+
+## ⭐ Sobre o projeto
+
+O Finance App foi desenvolvido com o objetivo de aplicar na prática conceitos de desenvolvimento Full Stack, incluindo:
+
+- Desenvolvimento de interfaces com React
+- Construção de API REST
+- Integração frontend e backend
+- Banco de dados relacional
+- Autenticação
+- Segurança de senhas
+- OAuth com Google
+- Envio de e-mails
+- CRUD
+- Gerenciamento de estado
+- Visualização de dados
+
+Este projeto faz parte do meu portfólio de desenvolvimento.
+
+---
+
+**Finance App — Organize hoje. Conquiste amanhã.**
