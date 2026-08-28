@@ -21,9 +21,11 @@ function Cadastro() {
 
         fetch("http://localhost:3000/cadastro", {
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json",
             },
+
             body: JSON.stringify({
                 nome,
                 email,
@@ -31,98 +33,186 @@ function Cadastro() {
             }),
         })
             .then((response) => {
-                console.log("Status:", response.status);
+                console.log(
+                    "Status:",
+                    response.status
+                );
+
                 return response.text();
             })
-            .then((data) => {
-                console.log("Resposta:", data);
 
-                alert("Cadastro realizado com sucesso!");
+            .then((data) => {
+                console.log(
+                    "Resposta:",
+                    data
+                );
+
+                alert(
+                    "Cadastro realizado com sucesso!"
+                );
 
                 setNome("");
                 setEmail("");
                 setSenha("");
                 setConfirmarSenha("");
             })
+
             .catch((error) => {
-                console.error("Erro:", error);
+                console.error(
+                    "Erro:",
+                    error
+                );
             });
     }
 
     return (
-        <main>
-            <section>
-                <div className="cadastro">
-                    <h1>Cadastre-se</h1>
-                    <p>Preencha seus dados para criar sua conta.</p>
+        <main className="cadastro-page">
 
-                    <form onSubmit={handleSubmit}>
-                        <div className="input-group">
-                            <label htmlFor="nome">Nome</label>
+            <div className="cadastro-card">
 
-                            <input
-                                type="text"
-                                id="nome"
-                                placeholder="Digite seu nome"
-                                value={nome}
-                                onChange={(e) => setNome(e.target.value)}
-                                required
-                            />
-                        </div>
+                <h1>
+                    Cadastre-se
+                </h1>
 
-                        <div className="input-group">
-                            <label htmlFor="email">E-mail</label>
+                <p className="cadastro-subtitulo">
+                    Preencha seus dados para criar sua conta.
+                </p>
 
-                            <input
-                                type="email"
-                                id="email"
-                                placeholder="Digite seu e-mail"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
 
-                        <div className="input-group">
-                            <label htmlFor="password">Senha</label>
+                <form onSubmit={handleSubmit}>
 
-                            <input
-                                type="password"
-                                id="password"
-                                placeholder="Digite sua senha"
-                                value={senha}
-                                onChange={(e) => setSenha(e.target.value)}
-                                required
-                            />
-                        </div>
+                    {/* NOME */}
 
-                        <div className="input-group">
-                            <label htmlFor="confirmPassword">
-                                Confirmar senha
-                            </label>
+                    <div className="cadastro-input-group">
 
-                            <input
-                                type="password"
-                                id="confirmPassword"
-                                placeholder="Digite sua senha novamente"
-                                value={confirmarSenha}
-                                onChange={(e) =>
-                                    setConfirmarSenha(e.target.value)
-                                }
-                                required
-                            />
-                        </div>
+                        <label htmlFor="nome">
+                            Nome
+                        </label>
 
-                        <button type="submit">Criar conta</button>
-                    </form>
+                        <input
+                            type="text"
+                            id="nome"
+                            placeholder="Digite seu nome"
+                            value={nome}
 
-                    <div className="login-link">
-                        <p>Já possui uma conta?</p>
+                            onChange={(e) =>
+                                setNome(
+                                    e.target.value
+                                )
+                            }
 
-                        <Link to="/">Entrar</Link>
+                            required
+                        />
+
                     </div>
+
+
+                    {/* EMAIL */}
+
+                    <div className="cadastro-input-group">
+
+                        <label htmlFor="email">
+                            E-mail
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="Digite seu e-mail"
+                            value={email}
+
+                            onChange={(e) =>
+                                setEmail(
+                                    e.target.value
+                                )
+                            }
+
+                            required
+                        />
+
+                    </div>
+
+
+                    {/* SENHA */}
+
+                    <div className="cadastro-input-group">
+
+                        <label htmlFor="password">
+                            Senha
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="Digite sua senha"
+                            value={senha}
+
+                            onChange={(e) =>
+                                setSenha(
+                                    e.target.value
+                                )
+                            }
+
+                            required
+                        />
+
+                    </div>
+
+
+                    {/* CONFIRMAR SENHA */}
+
+                    <div className="cadastro-input-group">
+
+                        <label htmlFor="confirmPassword">
+                            Confirmar senha
+                        </label>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            placeholder="Digite sua senha novamente"
+                            value={confirmarSenha}
+
+                            onChange={(e) =>
+                                setConfirmarSenha(
+                                    e.target.value
+                                )
+                            }
+
+                            required
+                        />
+
+                    </div>
+
+
+                    {/* BOTÃO */}
+
+                    <button
+                        type="submit"
+                        className="cadastro-button"
+                    >
+                        Criar conta
+                    </button>
+
+                </form>
+
+
+                {/* LOGIN */}
+
+                <div className="cadastro-login">
+
+                    <p>
+                        Já possui uma conta?
+                    </p>
+
+                    <Link to="/">
+                        Entrar
+                    </Link>
+
                 </div>
-            </section>
+
+            </div>
+
         </main>
     );
 }

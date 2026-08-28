@@ -1,0 +1,254 @@
+/* ==============================
+   PÁGINA DE CADASTRO
+============================== */
+
+.cadastro-page {
+    min-height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+
+    background:
+        radial-gradient(
+            circle at top left,
+            rgba(124, 58, 237, 0.22),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            rgba(79, 70, 229, 0.18),
+            transparent 35%
+        ),
+        #0f172a;
+}
+
+
+/* ==============================
+   CARD
+============================== */
+
+.cadastro-card {
+    width: 100%;
+    max-width: 440px;
+
+    padding: 38px 34px;
+
+    background: rgba(15, 23, 42, 0.94);
+
+    border: 1px solid rgba(148, 163, 184, 0.15);
+
+    border-radius: 22px;
+
+    box-shadow:
+        0 25px 60px rgba(0, 0, 0, 0.35);
+}
+
+
+/* ==============================
+   TÍTULO
+============================== */
+
+.cadastro-card h1 {
+    margin: 0 0 8px;
+
+    color: #ffffff;
+
+    font-size: 30px;
+    font-weight: 700;
+}
+
+
+/* ==============================
+   SUBTÍTULO
+============================== */
+
+.cadastro-subtitulo {
+    margin: 0 0 28px;
+
+    color: #94a3b8;
+
+    font-size: 15px;
+}
+
+
+/* ==============================
+   FORMULÁRIO
+============================== */
+
+.cadastro-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* ==============================
+   GRUPO DO INPUT
+============================== */
+
+.cadastro-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+
+/* ==============================
+   LABEL
+============================== */
+
+.cadastro-input-group label {
+    color: #e2e8f0;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* ==============================
+   INPUT
+============================== */
+
+.cadastro-input-group input {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 14px 15px;
+
+    border: 1px solid #334155;
+    border-radius: 12px;
+
+    background: #111827;
+
+    color: #ffffff;
+
+    font-size: 15px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+}
+
+
+.cadastro-input-group input::placeholder {
+    color: #64748b;
+}
+
+
+.cadastro-input-group input:focus {
+    border-color: #8b5cf6;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(139, 92, 246, 0.15);
+}
+
+
+/* ==============================
+   BOTÃO CRIAR CONTA
+============================== */
+
+.cadastro-button {
+    width: 100%;
+
+    margin-top: 6px;
+
+    padding: 15px;
+
+    border: none;
+    border-radius: 12px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    color: #ffffff;
+
+    font-size: 16px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+
+.cadastro-button:hover {
+    transform: translateY(-1px);
+
+    box-shadow:
+        0 10px 24px
+        rgba(124, 58, 237, 0.28);
+}
+
+
+.cadastro-button:active {
+    transform: translateY(0);
+}
+
+
+/* ==============================
+   LINK LOGIN
+============================== */
+
+.cadastro-login {
+    margin-top: 22px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+
+.cadastro-login p {
+    margin: 0;
+    color: #94a3b8;
+}
+
+
+.cadastro-login a {
+    color: #a78bfa;
+
+    font-weight: 600;
+
+    text-decoration: none;
+
+    transition: 0.2s ease;
+}
+
+
+.cadastro-login a:hover {
+    color: #c4b5fd;
+    text-decoration: underline;
+}
+
+
+/* ==============================
+   RESPONSIVO
+============================== */
+
+@media (max-width: 520px) {
+
+    .cadastro-page {
+        padding: 16px;
+    }
+
+    .cadastro-card {
+        padding: 30px 22px;
+        border-radius: 18px;
+    }
+
+    .cadastro-card h1 {
+        font-size: 26px;
+    }
+}
