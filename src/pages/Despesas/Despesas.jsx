@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import "./Despesas.css";
 
 function Despesas() {
@@ -21,45 +20,43 @@ function Despesas() {
     // =========================
 
     useEffect(() => {
+        const token =
+            localStorage.getItem("token");
+
+        if (!token) {
+            navigate("/");
+            return;
+        }
 
         fetch("http://localhost:3000/transacoes", {
-
             headers: {
-
                 Authorization:
-                    "Bearer " +
-                    localStorage.getItem("token")
-
+                    "Bearer " + token
             }
-
         })
             .then((response) => {
-
                 if (response.status === 401) {
-
                     localStorage.removeItem("token");
+                    localStorage.removeItem("nomeUsuario");
+                    localStorage.removeItem("fotoUsuario");
+
                     navigate("/");
 
                     throw new Error(
                         "Sessão expirada"
                     );
-
                 }
 
                 if (!response.ok) {
-
                     throw new Error(
                         "Erro ao buscar despesas"
                     );
-
                 }
 
                 return response.json();
-
             })
 
             .then((data) => {
-
                 const somenteDespesas =
                     data.filter(
                         (transacao) =>
@@ -69,22 +66,17 @@ function Despesas() {
                 setDespesas(
                     somenteDespesas
                 );
-
             })
 
             .catch((error) => {
-
                 console.error(
                     "Erro ao buscar despesas:",
                     error
                 );
-
             })
 
             .finally(() => {
-
                 setCarregando(false);
-
             });
 
     }, [navigate]);
@@ -99,25 +91,22 @@ function Despesas() {
             (total, despesa) =>
                 total +
                 Number(despesa.valor),
-
             0
         );
 
 
     // =========================
-    // FORMATAR DINHEIRO
+    // FORMATAR MOEDA
     // =========================
 
     function formatarMoeda(valor) {
-
-        return valor.toLocaleString(
+        return Number(valor).toLocaleString(
             "pt-BR",
             {
                 style: "currency",
                 currency: "BRL"
             }
         );
-
     }
 
 
@@ -126,13 +115,13 @@ function Despesas() {
     // =========================
 
     function formatarData(data) {
+        if (!data) {
+            return "";
+        }
 
-        return new Date(
-            data
-        ).toLocaleDateString(
+        return new Date(data).toLocaleDateString(
             "pt-BR"
         );
-
     }
 
 
@@ -141,18 +130,15 @@ function Despesas() {
     // =========================
 
     function handleLogout() {
-
         localStorage.removeItem("token");
         localStorage.removeItem("nomeUsuario");
         localStorage.removeItem("fotoUsuario");
 
         navigate("/");
-
     }
 
 
     return (
-
         <div className="despesas-layout">
 
             <aside className="despesas-sidebar">
@@ -201,9 +187,9 @@ function Despesas() {
             </aside>
 
 
-            <main className="despesas-main">
+            <div className="despesas-main">
 
-                <header className="despesas-header">
+                <div className="despesas-header">
 
                     <div>
 
@@ -254,10 +240,10 @@ function Despesas() {
 
                     </div>
 
-                </header>
+                </div>
 
 
-                <section className="despesas-resumo">
+                <div className="despesas-resumo">
 
                     <span>
                         Total de despesas
@@ -273,10 +259,10 @@ function Despesas() {
                         Todas as saídas cadastradas
                     </small>
 
-                </section>
+                </div>
 
 
-                <section className="despesas-panel">
+                <div className="despesas-panel">
 
                     <div className="despesas-panel-header">
 
@@ -349,9 +335,7 @@ function Despesas() {
                                             -{" "}
 
                                             {formatarMoeda(
-                                                Number(
-                                                    despesa.valor
-                                                )
+                                                despesa.valor
                                             )}
 
                                         </strong>
@@ -365,14 +349,12 @@ function Despesas() {
 
                     )}
 
-                </section>
+                </div>
 
-            </main>
+            </div>
 
         </div>
-
     );
-
 }
 
 export default Despesas;

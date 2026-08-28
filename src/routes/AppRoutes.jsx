@@ -5,6 +5,7 @@ import Cadastro from "../pages/Cadastro/Cadastro";
 import Dashboard from "../pages/Dashboard/Dashboard";
 import Transacoes from "../pages/Transacoes/Transacoes";
 import Receitas from "../pages/Receitas/Receitas";
+import Despesas from "../pages/Despesas/Despesas";
 
 function AppRoutes() {
     return (
@@ -35,6 +36,11 @@ function AppRoutes() {
                 <Route
                     path="/receitas"
                     element={<Receitas />}
+                />
+
+                <Route
+                    path="/despesas"
+                    element={<Despesas />}
                 />
 
             </Routes>
