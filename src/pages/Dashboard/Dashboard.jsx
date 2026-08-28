@@ -36,6 +36,9 @@ function Dashboard() {
     const nomeUsuario =
         localStorage.getItem("nomeUsuario") || "Usuário";
 
+    const fotoUsuario =
+        localStorage.getItem("fotoUsuario");    
+
 
     /* =========================
        LOGOUT
@@ -45,6 +48,7 @@ function Dashboard() {
 
         localStorage.removeItem("token");
         localStorage.removeItem("nomeUsuario");
+        localStorage.removeItem("fotoUsuario");
 
         navigate("/");
 
@@ -625,9 +629,20 @@ function Dashboard() {
 
                         <div className="dash-avatar">
 
-                            {nomeUsuario
+                             {fotoUsuario ? (
+
+                                 <img
+                                     src={fotoUsuario}
+                                    alt={nomeUsuario}
+                                />
+
+                        ) : (
+
+                                nomeUsuario
                                 .charAt(0)
-                                .toUpperCase()}
+                                .toUpperCase()
+
+                            )}
 
                         </div>
 

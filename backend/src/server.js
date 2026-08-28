@@ -3,20 +3,26 @@ const cors = require("cors");
 const connection = require("./database");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { OAuth2Client } = require("google-auth-library");
 
 require("dotenv").config();
 
 const app = express();
 
+const googleClient = new OAuth2Client(
+    process.env.GOOGLE_CLIENT_ID
+);
+
 app.use(cors());
 app.use(express.json());
 
 
-// ====================
-// Middleware JWT
-// ====================
+// ========================================
+// MIDDLEWARE JWT
+// ========================================
 
 function verificarToken(req, res, next) {
+
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -34,6 +40,7 @@ function verificarToken(req, res, next) {
     }
 
     try {
+
         const decoded = jwt.verify(
             token,
             process.env.JWT_SECRET
@@ -44,46 +51,63 @@ function verificarToken(req, res, next) {
         next();
 
     } catch (error) {
+
         return res.status(401).json({
             mensagem: "Token inválido ou expirado!"
         });
+
     }
 }
 
 
-// ====================
-// Rota inicial
-// ====================
+// ========================================
+// ROTA INICIAL
+// ========================================
 
 app.get("/", (req, res) => {
-    res.send("Primeira API");
+
+    res.send("Finance App API funcionando!");
+
 });
 
 
-// ====================
-// Cadastro
-// ====================
+// ========================================
+// CADASTRO NORMAL
+// ========================================
 
 app.post("/cadastro", async (req, res) => {
-    const { nome, email, senha } = req.body;
+
+    const {
+        nome,
+        email,
+        senha
+    } = req.body;
+
 
     if (!nome || !email || !senha) {
+
         return res.status(400).json({
             mensagem: "Preencha todos os campos!"
         });
+
     }
 
+
     try {
-        const senhaHash = await bcrypt.hash(
-            senha,
-            10
-        );
+
+        const senhaHash =
+            await bcrypt.hash(
+                senha,
+                10
+            );
+
 
         const sql = `
             INSERT INTO usuarios
             (nome, email, senha)
             VALUES (?, ?, ?)
         `;
+
 
         connection.query(
             sql,
@@ -95,53 +119,79 @@ app.post("/cadastro", async (req, res) => {
             (error, result) => {
 
                 if (error) {
-                    console.log(error);
+
+                    console.log(
+                        "Erro cadastro:",
+                        error
+                    );
 
                     return res.status(500).json({
                         mensagem:
                             "Erro ao cadastrar usuário"
                     });
+
                 }
 
+
                 return res.status(201).json({
+
                     mensagem:
                         "Usuário cadastrado com sucesso!",
 
                     usuarioId:
                         result.insertId
+
                 });
+
             }
         );
 
+
     } catch (error) {
-        console.log(error);
+
+        console.log(
+            "Erro cadastro:",
+            error
+        );
 
         return res.status(500).json({
             mensagem:
                 "Erro ao cadastrar usuário"
         });
+
     }
+
 });
 
 
-// ====================
-// Login
-// ====================
+// ========================================
+// LOGIN NORMAL
+// ========================================
 
 app.post("/login", (req, res) => {
-    const { email, senha } = req.body;
+
+    const {
+        email,
+        senha
+    } = req.body;
+
 
     if (!email || !senha) {
+
         return res.status(400).json({
             mensagem:
                 "Informe e-mail e senha!"
         });
+
     }
 
+
     const sql = `
-        SELECT * FROM usuarios
+        SELECT *
+        FROM usuarios
         WHERE email = ?
     `;
+
 
     connection.query(
         sql,
@@ -149,76 +199,373 @@ app.post("/login", (req, res) => {
         async (error, result) => {
 
             if (error) {
-                console.log(error);
+
+                console.log(
+                    "Erro login:",
+                    error
+                );
 
                 return res.status(500).json({
                     mensagem:
                         "Erro ao fazer login"
                 });
+
             }
 
+
             if (result.length === 0) {
+
                 return res.status(401).json({
                     mensagem:
                         "E-mail ou senha inválidos!"
                 });
+
             }
+
 
             const usuario = result[0];
 
+
             try {
+
                 const senhaCorreta =
                     await bcrypt.compare(
                         senha,
                         usuario.senha
                     );
 
+
                 if (!senhaCorreta) {
+
                     return res.status(401).json({
                         mensagem:
                             "E-mail ou senha inválidos!"
                     });
+
                 }
 
-                const token = jwt.sign(
-                    {
-                        id: usuario.id
-                    },
-                    process.env.JWT_SECRET,
-                    {
-                        expiresIn: "1h"
-                    }
-                );
+
+                const token =
+                    jwt.sign(
+                        {
+                            id: usuario.id
+                        },
+                        process.env.JWT_SECRET,
+                        {
+                            expiresIn: "1h"
+                        }
+                    );
+
 
                 return res.status(200).json({
+
                     mensagem:
                         "Login realizado com sucesso!",
 
-                    token: token,
+                    token,
 
                     usuario: {
                         id: usuario.id,
                         nome: usuario.nome,
                         email: usuario.email
                     }
+
                 });
 
+
             } catch (error) {
-                console.log(error);
+
+                console.log(
+                    "Erro senha:",
+                    error
+                );
 
                 return res.status(500).json({
                     mensagem:
                         "Erro ao verificar senha"
                 });
+
             }
+
         }
     );
+
 });
 
 
-// ====================
-// Perfil protegido
-// ====================
+// ========================================
+// LOGIN COM GOOGLE
+// ========================================
+
+app.post("/login/google", async (req, res) => {
+
+    const {
+        credential
+    } = req.body;
+
+
+    if (!credential) {
+
+        return res.status(400).json({
+            mensagem:
+                "Token do Google não enviado!"
+        });
+
+    }
+
+
+    try {
+
+        // Verifica se o token realmente veio
+        // do Google e pertence ao nosso app.
+
+        const ticket =
+            await googleClient.verifyIdToken({
+
+                idToken: credential,
+
+                audience:
+                    process.env.GOOGLE_CLIENT_ID
+
+            });
+
+
+        const payload =
+            ticket.getPayload();
+
+
+        if (!payload) {
+
+            return res.status(401).json({
+                mensagem:
+                    "Token do Google inválido!"
+            });
+
+        }
+
+
+        // Dados enviados pelo Google
+
+        const nome =
+            payload.name;
+
+        const email =
+            payload.email;
+
+        const foto =
+            payload.picture;
+
+
+        if (!email) {
+
+            return res.status(400).json({
+                mensagem:
+                    "E-mail da conta Google não encontrado!"
+            });
+
+        }
+
+
+        // Procura se essa conta já existe
+
+        const sqlBuscar = `
+            SELECT *
+            FROM usuarios
+            WHERE email = ?
+        `;
+
+
+        connection.query(
+            sqlBuscar,
+            [email],
+            async (error, result) => {
+
+                if (error) {
+
+                    console.log(
+                        "Erro busca Google:",
+                        error
+                    );
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao buscar usuário"
+                    });
+
+                }
+
+
+                // ========================================
+                // CONTA JÁ EXISTE
+                // ========================================
+
+                if (result.length > 0) {
+
+                    const usuario =
+                        result[0];
+
+
+                    const token =
+                        jwt.sign(
+                            {
+                                id: usuario.id
+                            },
+                            process.env.JWT_SECRET,
+                            {
+                                expiresIn: "1h"
+                            }
+                        );
+
+
+                    return res.status(200).json({
+
+                        mensagem:
+                            "Login com Google realizado com sucesso!",
+
+                        token,
+
+                        usuario: {
+
+                            id:
+                                usuario.id,
+
+                            nome:
+                                usuario.nome,
+
+                            email:
+                                usuario.email,
+
+                            foto:
+                                foto
+
+                        }
+
+                    });
+
+                }
+
+
+                // ========================================
+                // PRIMEIRO LOGIN COM GOOGLE
+                // ========================================
+
+                // Como a tabela atual exige uma senha,
+                // criamos uma senha aleatória e criptografada.
+
+                const senhaAleatoria =
+                    `${Date.now()}-${Math.random()}`;
+
+
+                const senhaHash =
+                    await bcrypt.hash(
+                        senhaAleatoria,
+                        10
+                    );
+
+
+                const sqlCadastrar = `
+                    INSERT INTO usuarios
+                    (nome, email, senha)
+                    VALUES (?, ?, ?)
+                `;
+
+
+                connection.query(
+                    sqlCadastrar,
+                    [
+                        nome,
+                        email,
+                        senhaHash
+                    ],
+                    (
+                        errorCadastro,
+                        resultCadastro
+                    ) => {
+
+                        if (errorCadastro) {
+
+                            console.log(
+                                "Erro cadastro Google:",
+                                errorCadastro
+                            );
+
+                            return res.status(500).json({
+                                mensagem:
+                                    "Erro ao cadastrar usuário Google"
+                            });
+
+                        }
+
+
+                        const usuarioId =
+                            resultCadastro.insertId;
+
+
+                        const token =
+                            jwt.sign(
+                                {
+                                    id: usuarioId
+                                },
+                                process.env.JWT_SECRET,
+                                {
+                                    expiresIn: "1h"
+                                }
+                            );
+
+
+                        return res.status(201).json({
+
+                            mensagem:
+                                "Conta Google criada com sucesso!",
+
+                            token,
+
+                            usuario: {
+
+                                id:
+                                    usuarioId,
+
+                                nome:
+                                    nome,
+
+                                email:
+                                    email,
+
+                                foto:
+                                    foto
+
+                            }
+
+                        });
+
+                    }
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        console.log(
+            "Erro no login Google:",
+            error
+        );
+
+
+        return res.status(401).json({
+            mensagem:
+                "Login com Google inválido!"
+        });
+
+    }
+
+});
+
+
+// ========================================
+// PERFIL
+// ========================================
 
 app.get(
     "/perfil",
@@ -228,11 +575,16 @@ app.get(
         const usuarioId =
             req.usuarioId;
 
+
         const sql = `
-            SELECT id, nome, email
+            SELECT
+                id,
+                nome,
+                email
             FROM usuarios
             WHERE id = ?
         `;
+
 
         connection.query(
             sql,
@@ -240,33 +592,44 @@ app.get(
             (error, result) => {
 
                 if (error) {
-                    console.log(error);
+
+                    console.log(
+                        "Erro perfil:",
+                        error
+                    );
 
                     return res.status(500).json({
                         mensagem:
                             "Erro ao buscar perfil"
                     });
+
                 }
 
+
                 if (result.length === 0) {
+
                     return res.status(404).json({
                         mensagem:
                             "Usuário não encontrado"
                     });
+
                 }
+
 
                 return res.status(200).json(
                     result[0]
                 );
+
             }
         );
+
     }
 );
 
 
-// ====================
-// Cadastrar transação
-// ====================
+// ========================================
+// CADASTRAR TRANSAÇÃO
+// ========================================
 
 app.post(
     "/transacoes",
@@ -280,8 +643,10 @@ app.post(
             data
         } = req.body;
 
+
         const usuarioId =
             req.usuarioId;
+
 
         if (
             !descricao ||
@@ -289,17 +654,40 @@ app.post(
             !tipo ||
             !data
         ) {
+
             return res.status(400).json({
                 mensagem:
                     "Preencha todos os campos da transação!"
             });
+
         }
+
+
+        if (
+            tipo !== "receita" &&
+            tipo !== "despesa"
+        ) {
+
+            return res.status(400).json({
+                mensagem:
+                    "Tipo de transação inválido!"
+            });
+
+        }
+
 
         const sql = `
             INSERT INTO transacoes
-            (descricao, valor, tipo, data, usuario_id)
+            (
+                descricao,
+                valor,
+                tipo,
+                data,
+                usuario_id
+            )
             VALUES (?, ?, ?, ?, ?)
         `;
+
 
         connection.query(
             sql,
@@ -313,30 +701,40 @@ app.post(
             (error, result) => {
 
                 if (error) {
-                    console.log(error);
+
+                    console.log(
+                        "Erro transação:",
+                        error
+                    );
 
                     return res.status(500).json({
                         mensagem:
                             "Erro ao cadastrar transação!"
                     });
+
                 }
 
+
                 return res.status(201).json({
+
                     mensagem:
                         "Transação cadastrada com sucesso!",
 
                     transacaoId:
                         result.insertId
+
                 });
+
             }
         );
+
     }
 );
 
 
-// ====================
-// Listar transações
-// ====================
+// ========================================
+// LISTAR TRANSAÇÕES
+// ========================================
 
 app.get(
     "/transacoes",
@@ -346,6 +744,7 @@ app.get(
         const usuarioId =
             req.usuarioId;
 
+
         const sql = `
             SELECT *
             FROM transacoes
@@ -353,32 +752,41 @@ app.get(
             ORDER BY data DESC
         `;
 
+
         connection.query(
             sql,
             [usuarioId],
             (error, result) => {
 
                 if (error) {
-                    console.log(error);
+
+                    console.log(
+                        "Erro ao listar transações:",
+                        error
+                    );
 
                     return res.status(500).json({
                         mensagem:
                             "Erro ao buscar transações!"
                     });
+
                 }
+
 
                 return res.status(200).json(
                     result
                 );
+
             }
         );
+
     }
 );
 
 
-// ====================
-// Excluir transação
-// ====================
+// ========================================
+// EXCLUIR TRANSAÇÃO
+// ========================================
 
 app.delete(
     "/transacoes/:id",
@@ -391,11 +799,13 @@ app.delete(
         const usuarioId =
             req.usuarioId;
 
+
         const sql = `
             DELETE FROM transacoes
             WHERE id = ?
             AND usuario_id = ?
         `;
+
 
         connection.query(
             sql,
@@ -406,36 +816,47 @@ app.delete(
             (error, result) => {
 
                 if (error) {
-                    console.log(error);
+
+                    console.log(
+                        "Erro ao excluir:",
+                        error
+                    );
 
                     return res.status(500).json({
                         mensagem:
                             "Erro ao excluir transação"
                     });
+
                 }
+
 
                 if (
                     result.affectedRows === 0
                 ) {
+
                     return res.status(404).json({
                         mensagem:
                             "Transação não encontrada"
                     });
+
                 }
+
 
                 return res.status(200).json({
                     mensagem:
                         "Transação excluída com sucesso!"
                 });
+
             }
         );
+
     }
 );
 
 
-// ====================
-// Editar transação
-// ====================
+// ========================================
+// EDITAR TRANSAÇÃO
+// ========================================
 
 app.put(
     "/transacoes/:id",
@@ -445,6 +866,7 @@ app.put(
         const id =
             req.params.id;
 
+
         const {
             descricao,
             valor,
@@ -452,8 +874,10 @@ app.put(
             data
         } = req.body;
 
+
         const usuarioId =
             req.usuarioId;
+
 
         if (
             !descricao ||
@@ -461,22 +885,41 @@ app.put(
             !tipo ||
             !data
         ) {
+
             return res.status(400).json({
                 mensagem:
                     "Preencha todos os campos da transação!"
             });
+
         }
+
+
+        if (
+            tipo !== "receita" &&
+            tipo !== "despesa"
+        ) {
+
+            return res.status(400).json({
+                mensagem:
+                    "Tipo de transação inválido!"
+            });
+
+        }
+
 
         const sql = `
             UPDATE transacoes
+
             SET
                 descricao = ?,
                 valor = ?,
                 tipo = ?,
                 data = ?
+
             WHERE id = ?
             AND usuario_id = ?
         `;
+
 
         connection.query(
             sql,
@@ -491,39 +934,52 @@ app.put(
             (error, result) => {
 
                 if (error) {
-                    console.log(error);
+
+                    console.log(
+                        "Erro ao editar:",
+                        error
+                    );
 
                     return res.status(500).json({
                         mensagem:
                             "Erro ao editar transação"
                     });
+
                 }
+
 
                 if (
                     result.affectedRows === 0
                 ) {
+
                     return res.status(404).json({
                         mensagem:
                             "Transação não encontrada"
                     });
+
                 }
+
 
                 return res.status(200).json({
                     mensagem:
                         "Transação editada com sucesso!"
                 });
+
             }
         );
+
     }
 );
 
 
-// ====================
-// Servidor
-// ====================
+// ========================================
+// SERVIDOR
+// ========================================
 
 app.listen(3000, () => {
+
     console.log(
         "Servidor rodando na porta 3000"
     );
+
 });
