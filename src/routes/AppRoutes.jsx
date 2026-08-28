@@ -7,6 +7,7 @@ import Transacoes from "../pages/Transacoes/Transacoes";
 import Receitas from "../pages/Receitas/Receitas";
 import Despesas from "../pages/Despesas/Despesas";
 import Metas from "../pages/Metas/Metas";
+import Perfil from "../pages/Perfil/Perfil";
 
 function AppRoutes() {
     return (
@@ -47,6 +48,11 @@ function AppRoutes() {
                 <Route
                     path="/metas"
                     element={<Metas />}
+                />
+
+                <Route
+                    path="/perfil"
+                    element={<Perfil />}
                 />
 
             </Routes>
