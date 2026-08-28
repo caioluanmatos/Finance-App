@@ -10,6 +10,13 @@ function Transacoes() {
 
     const [transacoes, setTransacoes] = useState([]);
 
+    // ID da transação que está sendo editada
+    const [editandoId, setEditandoId] = useState(null);
+
+    // =========================
+    // Buscar transações
+    // =========================
+
     useEffect(() => {
         fetch("http://localhost:3000/transacoes", {
             headers: {
@@ -19,7 +26,9 @@ function Transacoes() {
         })
             .then((response) => {
                 if (!response.ok) {
-                    throw new Error("Erro ao buscar transações");
+                    throw new Error(
+                        "Erro ao buscar transações"
+                    );
                 }
 
                 return response.json();
@@ -32,16 +41,97 @@ function Transacoes() {
             });
     }, []);
 
+    // =========================
+    // Criar ou editar transação
+    // =========================
+
     function handleSubmit(event) {
         event.preventDefault();
 
+        // Se existir um ID sendo editado,
+        // fazemos PUT
+        if (editandoId !== null) {
+
+            fetch(
+                `http://localhost:3000/transacoes/${editandoId}`,
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization:
+                            "Bearer " +
+                            localStorage.getItem("token")
+                    },
+
+                    body: JSON.stringify({
+                        descricao,
+                        valor,
+                        tipo,
+                        data
+                    })
+                }
+            )
+                .then((response) => {
+                    if (!response.ok) {
+                        throw new Error(
+                            "Erro ao editar transação"
+                        );
+                    }
+
+                    return response.json();
+                })
+                .then((dataResposta) => {
+                    console.log(
+                        "Resposta:",
+                        dataResposta
+                    );
+
+                    alert(
+                        "Transação editada com sucesso!"
+                    );
+
+                    // Atualiza a transação na tela
+                    setTransacoes((listaAtual) =>
+                        listaAtual.map((transacao) =>
+                            transacao.id === editandoId
+                                ? {
+                                    ...transacao,
+                                    descricao,
+                                    valor,
+                                    tipo,
+                                    data
+                                }
+                                : transacao
+                        )
+                    );
+
+                    limparFormulario();
+                })
+                .catch((error) => {
+                    console.error("Erro:", error);
+
+                    alert(
+                        "Erro ao editar transação"
+                    );
+                });
+
+            return;
+        }
+
+        // =========================
+        // Criar nova transação
+        // =========================
+
         fetch("http://localhost:3000/transacoes", {
             method: "POST",
+
             headers: {
                 "Content-Type": "application/json",
                 Authorization:
-                    "Bearer " + localStorage.getItem("token")
+                    "Bearer " +
+                    localStorage.getItem("token")
             },
+
             body: JSON.stringify({
                 descricao,
                 valor,
@@ -59,10 +149,17 @@ function Transacoes() {
                 return response.json();
             })
             .then((dataResposta) => {
-                console.log("Resposta:", dataResposta);
+                console.log(
+                    "Resposta:",
+                    dataResposta
+                );
 
-                alert("Transação adicionada com sucesso!");
+                alert(
+                    "Transação adicionada com sucesso!"
+                );
 
+                // Coloca a nova transação
+                // imediatamente na lista
                 setTransacoes((listaAtual) => [
                     {
                         id: dataResposta.transacaoId,
@@ -71,29 +168,90 @@ function Transacoes() {
                         tipo,
                         data
                     },
+
                     ...listaAtual
                 ]);
 
-                setDescricao("");
-                setValor("");
-                setTipo("receita");
-                setData("");
+                limparFormulario();
             })
             .catch((error) => {
                 console.error("Erro:", error);
 
-                alert("Erro ao cadastrar transação");
+                alert(
+                    "Erro ao cadastrar transação"
+                );
             });
     }
 
+    // =========================
+    // Selecionar para editar
+    // =========================
+
+    function handleEditar(transacao) {
+        setEditandoId(transacao.id);
+
+        setDescricao(transacao.descricao);
+        setValor(transacao.valor);
+        setTipo(transacao.tipo);
+
+        // MySQL pode devolver data com horário.
+        // O input type="date" precisa de YYYY-MM-DD.
+        setData(
+            String(transacao.data).split("T")[0]
+        );
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
+
+    // =========================
+    // Cancelar edição
+    // =========================
+
+    function handleCancelarEdicao() {
+        limparFormulario();
+    }
+
+    // =========================
+    // Limpar formulário
+    // =========================
+
+    function limparFormulario() {
+        setDescricao("");
+        setValor("");
+        setTipo("receita");
+        setData("");
+
+        setEditandoId(null);
+    }
+
+    // =========================
+    // Excluir transação
+    // =========================
+
     function handleExcluir(id) {
-        fetch(`http://localhost:3000/transacoes/${id}`, {
-            method: "DELETE",
-            headers: {
-                Authorization:
-                    "Bearer " + localStorage.getItem("token")
+        const confirmar = window.confirm(
+            "Deseja realmente excluir esta transação?"
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+        fetch(
+            `http://localhost:3000/transacoes/${id}`,
+            {
+                method: "DELETE",
+
+                headers: {
+                    Authorization:
+                        "Bearer " +
+                        localStorage.getItem("token")
+                }
             }
-        })
+        )
             .then((response) => {
                 if (!response.ok) {
                     throw new Error(
@@ -103,10 +261,15 @@ function Transacoes() {
 
                 return response.json();
             })
-            .then((data) => {
-                console.log("Resposta:", data);
+            .then((dataResposta) => {
+                console.log(
+                    "Resposta:",
+                    dataResposta
+                );
 
-                alert("Transação excluída com sucesso!");
+                alert(
+                    "Transação excluída com sucesso!"
+                );
 
                 setTransacoes((listaAtual) =>
                     listaAtual.filter(
@@ -114,11 +277,19 @@ function Transacoes() {
                             transacao.id !== id
                     )
                 );
+
+                // Caso esteja editando
+                // justamente a transação excluída
+                if (editandoId === id) {
+                    limparFormulario();
+                }
             })
             .catch((error) => {
                 console.error("Erro:", error);
 
-                alert("Erro ao excluir transação");
+                alert(
+                    "Erro ao excluir transação"
+                );
             });
     }
 
@@ -126,6 +297,7 @@ function Transacoes() {
         <div className="transacoes-page">
 
             <div className="transacoes-topo">
+
                 <Link
                     to="/dashboard"
                     className="btn-voltar"
@@ -140,6 +312,7 @@ function Transacoes() {
                         Gerencie suas receitas e despesas
                     </p>
                 </div>
+
             </div>
 
             <form
@@ -166,6 +339,7 @@ function Transacoes() {
 
                     <input
                         type="number"
+                        step="0.01"
                         placeholder="R$ 0,00"
                         value={valor}
                         onChange={(e) =>
@@ -191,6 +365,7 @@ function Transacoes() {
                         <option value="despesa">
                             Despesa
                         </option>
+
                     </select>
                 </div>
 
@@ -208,105 +383,155 @@ function Transacoes() {
                 </div>
 
                 <button type="submit">
-                    Adicionar transação
+                    {editandoId !== null
+                        ? "Salvar alterações"
+                        : "Adicionar transação"}
                 </button>
+
+                {editandoId !== null && (
+                    <button
+                        type="button"
+                        className="btn-cancelar"
+                        onClick={
+                            handleCancelarEdicao
+                        }
+                    >
+                        Cancelar edição
+                    </button>
+                )}
 
             </form>
 
             <div className="transacoes-lista">
 
                 <div className="transacoes-lista-header">
+
                     <div>
                         <span>Histórico</span>
 
-                        <h2>Minhas transações</h2>
+                        <h2>
+                            Minhas transações
+                        </h2>
 
                         <p>
                             Acompanhe suas últimas movimentações financeiras.
                         </p>
                     </div>
+
                 </div>
 
                 {transacoes.length === 0 ? (
+
                     <div className="transacoes-vazia">
+
                         <p>
                             Nenhuma transação encontrada.
                         </p>
+
                     </div>
+
                 ) : (
+
                     <div className="transacoes-items">
 
-                        {transacoes.map((transacao) => (
-                            <div
-                                key={transacao.id}
-                                className="transacao-item"
-                            >
+                        {transacoes.map(
+                            (transacao) => (
 
-                                <div className="transacao-info">
+                                <div
+                                    key={
+                                        transacao.id
+                                    }
+                                    className="transacao-item"
+                                >
 
-                                    <div
-                                        className={`transacao-icon ${
-                                            transacao.tipo === "receita"
-                                                ? "receita"
-                                                : "despesa"
-                                        }`}
+                                    <div className="transacao-info">
+
+                                        <div
+                                            className={`transacao-icon ${
+                                                transacao.tipo ===
+                                                "receita"
+                                                    ? "receita"
+                                                    : "despesa"
+                                            }`}
+                                        >
+                                            {transacao.tipo ===
+                                            "receita"
+                                                ? "+"
+                                                : "-"}
+                                        </div>
+
+                                        <div>
+
+                                            <strong>
+                                                {
+                                                    transacao.descricao
+                                                }
+                                            </strong>
+
+                                            <span>
+                                                {transacao.tipo ===
+                                                "receita"
+                                                    ? "Receita"
+                                                    : "Despesa"}
+                                            </span>
+
+                                        </div>
+
+                                    </div>
+
+                                    <strong
+                                        className={
+                                            transacao.tipo ===
+                                            "receita"
+                                                ? "transacao-valor receita"
+                                                : "transacao-valor despesa"
+                                        }
                                     >
-                                        {transacao.tipo === "receita"
+
+                                        {transacao.tipo ===
+                                        "receita"
                                             ? "+"
-                                            : "-"}
-                                    </div>
+                                            : "-"}{" "}
 
-                                    <div>
-                                        <strong>
-                                            {transacao.descricao}
-                                        </strong>
+                                        R${" "}
 
-                                        <span>
-                                            {transacao.tipo === "receita"
-                                                ? "Receita"
-                                                : "Despesa"}
-                                        </span>
-                                    </div>
+                                        {Number(
+                                            transacao.valor
+                                        ).toLocaleString(
+                                            "pt-BR",
+                                            {
+                                                minimumFractionDigits: 2,
+                                                maximumFractionDigits: 2
+                                            }
+                                        )}
+
+                                    </strong>
+
+                                    <button
+                                        className="btn-editar"
+                                        onClick={() =>
+                                            handleEditar(
+                                                transacao
+                                            )
+                                        }
+                                    >
+                                        Editar
+                                    </button>
+
+                                    <button
+                                        className="btn-excluir"
+                                        onClick={() =>
+                                            handleExcluir(
+                                                transacao.id
+                                            )
+                                        }
+                                    >
+                                        Excluir
+                                    </button>
 
                                 </div>
-
-                                <strong
-                                    className={
-                                        transacao.tipo === "receita"
-                                            ? "transacao-valor receita"
-                                            : "transacao-valor despesa"
-                                    }
-                                >
-                                    {transacao.tipo === "receita"
-                                        ? "+"
-                                        : "-"}{" "}
-
-                                    R${" "}
-
-                                    {Number(
-                                        transacao.valor
-                                    ).toLocaleString(
-                                        "pt-BR",
-                                        {
-                                            minimumFractionDigits: 2,
-                                            maximumFractionDigits: 2
-                                        }
-                                    )}
-                                </strong>
-
-                                <button
-                                    className="btn-excluir"
-                                    onClick={() =>
-                                        handleExcluir(
-                                            transacao.id
-                                        )
-                                    }
-                                >
-                                    Excluir
-                                </button>
-
-                            </div>
-                        ))}
+                            )
+                        )}
 
                     </div>
                 )}
