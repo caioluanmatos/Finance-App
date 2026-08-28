@@ -31,6 +31,7 @@ A aplicação permitirá que o usuário organize sua vida financeira de maneira 
 - Node.js
 - Express
 - CORS
+ - Python
 
 ## Banco de Dados
 
@@ -92,14 +93,14 @@ finance-app/
 - [x] Login de usuários
 - [x] Criptografia de senhas (bcrypt)
 - [x] Autenticação com JWT
-- [ ] Dashboard Financeiro
-- [ ] Cadastro de Receitas
-- [ ] Cadastro de Despesas
-- [ ] Metas Financeiras
-- [ ] Perfil do Usuário
-- [ ] Gráficos Financeiros
-- [ ] Tema Claro/Escuro
-- [ ] Responsividade
+- [x] Dashboard Financeiro
+- [x] Cadastro de Receitas
+- [x] Cadastro de Despesas
+- [x] Metas Financeiras
+- [x] Perfil do Usuário
+- [x] Gráficos Financeiros
+- [x] Tema Claro/Escuro
+- [x] Responsividade
 
 ---
 
@@ -133,6 +134,7 @@ usuarios
 Durante o desenvolvimento deste projeto estou praticando conceitos importantes de desenvolvimento Full Stack, como:
 
 - React
+- Python
 - Componentização
 - React Router
 - Hooks
@@ -158,6 +160,7 @@ Durante o desenvolvimento deste projeto estou praticando conceitos importantes d
 - Express
 - MySQL
 - SQL
+ - Python
 - Persistência de dados
 - Integração React + Node.js + MySQL
 
