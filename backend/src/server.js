@@ -4,8 +4,26 @@ const connection = require("./database");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { OAuth2Client } = require("google-auth-library");
+const nodemailer = require("nodemailer");
 
 require("dotenv").config();
+
+// ========================================
+// CONFIGURAÇÃO DE E-MAIL
+// ========================================
+
+const transporter = nodemailer.createTransport({
+    service: "gmail",
+
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS
+    }
+});
+
+const codigosSenha = new Map();
+
+
 
 const app = express();
 
@@ -625,6 +643,171 @@ app.get(
 
     }
 );
+
+// ========================================
+// ALTERAR SENHA DO PERFIL
+// ========================================
+
+app.put(
+    "/perfil/senha",
+    verificarToken,
+    async (req, res) => {
+
+        const usuarioId = req.usuarioId;
+
+        const {
+            senhaAtual,
+            novaSenha,
+            confirmarSenha
+        } = req.body;
+
+
+        // Verifica se todos os campos foram enviados
+        if (
+            !senhaAtual ||
+            !novaSenha ||
+            !confirmarSenha
+        ) {
+            return res.status(400).json({
+                mensagem: "Preencha todos os campos!"
+            });
+        }
+
+
+        // Confirma se as duas novas senhas são iguais
+        if (novaSenha !== confirmarSenha) {
+            return res.status(400).json({
+                mensagem:
+                    "A nova senha e a confirmação não são iguais!"
+            });
+        }
+
+
+        // Tamanho mínimo
+        if (novaSenha.length < 6) {
+            return res.status(400).json({
+                mensagem:
+                    "A nova senha precisa ter pelo menos 6 caracteres!"
+            });
+        }
+
+
+        const sqlBuscar = `
+            SELECT *
+            FROM usuarios
+            WHERE id = ?
+        `;
+
+
+        connection.query(
+            sqlBuscar,
+            [usuarioId],
+            async (error, result) => {
+
+                if (error) {
+                    console.log(
+                        "Erro ao buscar usuário:",
+                        error
+                    );
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao buscar usuário!"
+                    });
+                }
+
+
+                if (result.length === 0) {
+                    return res.status(404).json({
+                        mensagem:
+                            "Usuário não encontrado!"
+                    });
+                }
+
+
+                const usuario = result[0];
+
+
+                try {
+
+                    // Compara a senha digitada
+                    // com a senha criptografada do banco
+                    const senhaCorreta =
+                        await bcrypt.compare(
+                            senhaAtual,
+                            usuario.senha
+                        );
+
+
+                    if (!senhaCorreta) {
+                        return res.status(401).json({
+                            mensagem:
+                                "Senha atual incorreta!"
+                        });
+                    }
+
+
+                    // Criptografa a nova senha
+                    const novaSenhaHash =
+                        await bcrypt.hash(
+                            novaSenha,
+                            10
+                        );
+
+
+                    const sqlAtualizar = `
+                        UPDATE usuarios
+                        SET senha = ?
+                        WHERE id = ?
+                    `;
+
+
+                    connection.query(
+                        sqlAtualizar,
+                        [
+                            novaSenhaHash,
+                            usuarioId
+                        ],
+                        (errorAtualizar) => {
+
+                            if (errorAtualizar) {
+                                console.log(
+                                    "Erro ao alterar senha:",
+                                    errorAtualizar
+                                );
+
+                                return res.status(500).json({
+                                    mensagem:
+                                        "Erro ao alterar senha!"
+                                });
+                            }
+
+
+                            return res.status(200).json({
+                                mensagem:
+                                    "Senha alterada com sucesso!"
+                            });
+                        }
+                    );
+
+                } catch (error) {
+
+                    console.log(
+                        "Erro ao verificar senha:",
+                        error
+                    );
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao alterar senha!"
+                    });
+                }
+            }
+        );
+    }
+);
+
+
 
 
 // ========================================
@@ -1316,15 +1499,3 @@ app.listen(3000, () => {
 
 });
 
-
-// ========================================
-// SERVIDOR
-// ========================================
-
-app.listen(3000, () => {
-
-    console.log(
-        "Servidor rodando na porta 3000"
-    );
-
-});
