@@ -1,6 +1,7 @@
 import "./Transacoes.css";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Transacoes() {
     const [descricao, setDescricao] = useState("");
@@ -18,7 +19,7 @@ function Transacoes() {
     // =========================
 
     useEffect(() => {
-        fetch("http://localhost:3000/transacoes", {
+        fetch(`${API_URL}/transacoes`, {
             headers: {
                 Authorization:
                     "Bearer " + localStorage.getItem("token")
@@ -52,7 +53,7 @@ function Transacoes() {
         if (editandoId !== null) {
 
             fetch(
-                `http://localhost:3000/transacoes/${editandoId}`,
+                `${API_URL}/transacoes/${editandoId}`,
                 {
                     method: "PUT",
 
@@ -123,7 +124,7 @@ function Transacoes() {
         // Criar nova transação
         // =========================
 
-        fetch("http://localhost:3000/transacoes", {
+        fetch(`${API_URL}/transacoes`, {
             method: "POST",
 
             headers: {
@@ -243,7 +244,7 @@ function Transacoes() {
         }
 
         fetch(
-            `http://localhost:3000/transacoes/${id}`,
+            `${API_URL}/transacoes/${id}`,
             {
                 method: "DELETE",
 

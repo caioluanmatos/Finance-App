@@ -3,6 +3,8 @@ import "./Perfil.css";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Perfil() {
 
     const [nome, setNome] = useState("");
@@ -35,7 +37,7 @@ function Perfil() {
         }
 
 
-        fetch("http://localhost:3000/perfil", {
+        fetch(`${API_URL}/perfil`, {
 
             headers: {
                 Authorization:
@@ -110,7 +112,7 @@ function Perfil() {
 
 
         fetch(
-            "http://localhost:3000/perfil/senha",
+            `${API_URL}/perfil/senha`,
             {
                 method: "PUT",
 

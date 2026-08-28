@@ -1,5 +1,4 @@
 import "./Dashboard.css";
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -24,6 +23,8 @@ ChartJS.register(
     Tooltip,
     Legend
 );
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 
 function Dashboard() {
@@ -61,7 +62,7 @@ function Dashboard() {
 
     useEffect(() => {
 
-        fetch("http://localhost:3000/transacoes", {
+        fetch(`${API_URL}/transacoes`, {
 
             headers: {
 

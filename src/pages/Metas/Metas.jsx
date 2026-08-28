@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Metas.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function Metas() {
     const navigate = useNavigate();
 
@@ -53,7 +55,7 @@ function Metas() {
         setCarregando(true);
 
         fetch(
-            "http://localhost:3000/metas",
+            `${API_URL}/metas`,
             {
                 headers: {
                     Authorization:
@@ -264,8 +266,8 @@ function Metas() {
 
         const url =
             editandoId
-                ? `http://localhost:3000/metas/${editandoId}`
-                : "http://localhost:3000/metas";
+                 ? `${API_URL}/metas/${editandoId}`
+                :  `${API_URL}/metas`;
 
 
         const metodo =
@@ -353,7 +355,7 @@ function Metas() {
 
 
         fetch(
-            `http://localhost:3000/metas/${id}`,
+             `${API_URL}/metas/${id}`,
             {
 
                 method: "DELETE",

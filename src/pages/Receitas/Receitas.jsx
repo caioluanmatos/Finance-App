@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./Receitas.css";
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Receitas() {
 
@@ -31,7 +32,7 @@ function Receitas() {
         }
 
         fetch(
-            "http://localhost:3000/transacoes",
+            `${API_URL}/transacoes`,
             {
                 headers: {
                     Authorization:

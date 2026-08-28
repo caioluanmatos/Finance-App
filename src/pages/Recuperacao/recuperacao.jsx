@@ -2,6 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./recuperacao.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 function RecuperarSenha() {
 
     const navigate = useNavigate();
@@ -39,7 +41,7 @@ function RecuperarSenha() {
         try {
 
             const response = await fetch(
-                "http://localhost:3000/esqueci-senha/enviar-codigo",
+                `${API_URL}/esqueci-senha/enviar-codigo`,
                 {
                     method: "POST",
 
@@ -93,7 +95,7 @@ function RecuperarSenha() {
         try {
 
             const response = await fetch(
-                "http://localhost:3000/esqueci-senha/verificar-codigo",
+                `${API_URL}/esqueci-senha/verificar-codigo`,
                 {
                     method: "POST",
 
@@ -167,7 +169,7 @@ function RecuperarSenha() {
         try {
 
             const response = await fetch(
-                "http://localhost:3000/esqueci-senha/redefinir",
+                `${API_URL}/esqueci-senha/redefinir`,
                 {
                     method: "POST",
 

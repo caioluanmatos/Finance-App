@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-
 import "./Cadastro.css";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Cadastro() {
     const [nome, setNome] = useState("");
@@ -19,7 +20,7 @@ function Cadastro() {
 
         console.log("Entrou no cadastro");
 
-        fetch("http://localhost:3000/cadastro", {
+        fetch(`${API_URL}/cadastro`, {
             method: "POST",
 
             headers: {

@@ -3,8 +3,11 @@ import { FaUser, FaLock } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { GoogleLogin } from "@react-oauth/google";
 
+
 import "./Login.css";
 import logo from "../../assets/images/Logo/logoapp.png";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 function Login() {
 
@@ -20,7 +23,7 @@ function Login() {
 
     useEffect(() => {
 
-        fetch("http://localhost:3000")
+        fetch(API_URL)
 
             .then((response) =>
                 response.text()
@@ -50,7 +53,7 @@ function Login() {
 
         event.preventDefault();
 
-        fetch("http://localhost:3000/login", {
+        fetch(`${API_URL}/login`, {
 
             method: "POST",
 
@@ -160,7 +163,7 @@ function Login() {
 
 
         fetch(
-            "http://localhost:3000/login/google",
+            `${API_URL}/login/google`,
             {
 
                 method: "POST",
