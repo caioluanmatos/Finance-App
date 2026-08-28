@@ -50,7 +50,6 @@ function Login() {
 
         event.preventDefault();
 
-
         fetch("http://localhost:3000/login", {
 
             method: "POST",
@@ -108,14 +107,12 @@ function Login() {
                 }
 
 
-                // Login normal não usa foto Google
+                // LOGIN NORMAL NÃO USA FOTO GOOGLE
 
                 localStorage.removeItem(
                     "fotoUsuario"
                 );
 
-
-                // IR PARA DASHBOARD
 
                 navigate("/dashboard");
 
@@ -205,9 +202,7 @@ function Login() {
                 );
 
 
-                // =========================
                 // SALVAR TOKEN
-                // =========================
 
                 localStorage.setItem(
                     "token",
@@ -215,9 +210,7 @@ function Login() {
                 );
 
 
-                // =========================
                 // SALVAR NOME
-                // =========================
 
                 if (data.usuario?.nome) {
 
@@ -229,9 +222,7 @@ function Login() {
                 }
 
 
-                // =========================
                 // SALVAR FOTO GOOGLE
-                // =========================
 
                 if (data.usuario?.foto) {
 
@@ -247,17 +238,6 @@ function Login() {
                     );
 
                 }
-
-
-                console.log(
-                    "Nome salvo:",
-                    data.usuario?.nome
-                );
-
-                console.log(
-                    "Foto salva:",
-                    data.usuario?.foto
-                );
 
 
                 navigate("/dashboard");
@@ -299,9 +279,10 @@ function Login() {
 
     return (
 
-        <main>
+        <main className="login-page">
 
-            <section>
+            <section className="login-card">
+
 
                 {/* LOGO */}
 
@@ -317,8 +298,7 @@ function Login() {
                     </h1>
 
                     <p>
-                        Organize hoje.
-                        Conquiste amanhã.
+                        Organize hoje. Conquiste amanhã.
                     </p>
 
                 </div>
@@ -327,14 +307,11 @@ function Login() {
                 <form onSubmit={handleSubmit}>
 
 
-                    {/* =========================
-                        EMAIL
-                    ========================= */}
+                    {/* EMAIL */}
 
                     <label htmlFor="email">
                         E-mail
                     </label>
-
 
                     <div className="input-group">
 
@@ -358,14 +335,11 @@ function Login() {
                     </div>
 
 
-                    {/* =========================
-                        SENHA
-                    ========================= */}
+                    {/* SENHA */}
 
                     <label htmlFor="password">
                         Senha
                     </label>
-
 
                     <div className="input-group">
 
@@ -389,9 +363,7 @@ function Login() {
                     </div>
 
 
-                    {/* =========================
-                        ESQUECEU A SENHA
-                    ========================= */}
+                    {/* ESQUECEU A SENHA */}
 
                     <div className="forgot-password">
 
@@ -402,9 +374,7 @@ function Login() {
                     </div>
 
 
-                    {/* =========================
-                        LEMBRAR
-                    ========================= */}
+                    {/* LEMBRAR-ME */}
 
                     <div className="remember-me">
 
@@ -421,9 +391,7 @@ function Login() {
                     </div>
 
 
-                    {/* =========================
-                        LOGIN NORMAL
-                    ========================= */}
+                    {/* LOGIN NORMAL */}
 
                     <button type="submit">
 
@@ -432,9 +400,7 @@ function Login() {
                     </button>
 
 
-                    {/* =========================
-                        LOGIN GOOGLE
-                    ========================= */}
+                    {/* LOGIN GOOGLE */}
 
                     <div className="google-login-area">
 
@@ -468,9 +434,7 @@ function Login() {
                     </div>
 
 
-                    {/* =========================
-                        CADASTRO
-                    ========================= */}
+                    {/* CADASTRO */}
 
                     <div className="register-link">
 
