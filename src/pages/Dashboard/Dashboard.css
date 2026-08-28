@@ -4,13 +4,12 @@
 
     display: flex;
 
-    background:
-        linear-gradient(
-            135deg,
-            #0f172a 0%,
-            #17183f 45%,
-            #4c1d95 100%
-        );
+    background: linear-gradient(
+        135deg,
+        #0f172a 0%,
+        #17183f 45%,
+        #4c1d95 100%
+    );
 
     color: #f8fafc;
 }
@@ -65,19 +64,19 @@
 }
 
 .dash-menu a:hover {
-    color: white;
+    color: #ffffff;
+
     background: rgba(124, 58, 237, 0.15);
 }
 
 .dash-menu .dash-active {
-    color: white;
+    color: #ffffff;
 
-    background:
-        linear-gradient(
-            135deg,
-            #4f46e5,
-            #7c3aed
-        );
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #7c3aed
+    );
 }
 
 .dash-logout {
@@ -91,11 +90,18 @@
     border-radius: 10px;
 
     background: rgba(239, 68, 68, 0.12);
+
     color: #f87171;
 
     font-weight: 600;
 
     cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.dash-logout:hover {
+    background: rgba(239, 68, 68, 0.22);
 }
 
 
@@ -157,12 +163,11 @@
 
     border-radius: 50%;
 
-    background:
-        linear-gradient(
-            135deg,
-            #4f46e5,
-            #7c3aed
-        );
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #7c3aed
+    );
 
     font-weight: 700;
 }
@@ -190,8 +195,10 @@
 
     display: grid;
 
-    grid-template-columns:
-        repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(
+        3,
+        minmax(0, 1fr)
+    );
 
     gap: 20px;
 
@@ -214,8 +221,7 @@
 
     border: 1px solid rgba(255, 255, 255, 0.07);
 
-    box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
 }
 
 .dash-card span {
@@ -231,12 +237,11 @@
 }
 
 .dash-balance {
-    background:
-        linear-gradient(
-            135deg,
-            #4338ca,
-            #7c3aed
-        );
+    background: linear-gradient(
+        135deg,
+        #4338ca,
+        #7c3aed
+    );
 }
 
 .dash-balance small {
@@ -276,8 +281,7 @@
 
     border: 1px solid rgba(255, 255, 255, 0.07);
 
-    box-shadow:
-        0 15px 35px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
 .dash-panel-header {
@@ -306,13 +310,16 @@
 .dash-panel-header select {
     padding: 10px 14px;
 
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.08);
     outline: none;
 
     border-radius: 9px;
 
     background: #0f172a;
+
     color: #f8fafc;
+
+    cursor: pointer;
 }
 
 .dash-panel-header button {
@@ -325,30 +332,50 @@
     cursor: pointer;
 }
 
+/* Para o Link "Ver todas" */
+
+.dash-panel-header a {
+    color: #a78bfa;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+.dash-panel-header a:hover {
+    color: #c4b5fd;
+}
+
 
 /* =========================
    GRÁFICO
 ========================= */
 
+.dash-chart {
+    overflow: hidden;
+}
+
 .dash-chart-area {
     width: 100%;
-    min-height: 300px;
+    height: 320px;
 
-    display: flex;
-    flex-direction: column;
+    position: relative;
 
-    align-items: center;
-    justify-content: center;
-
-    gap: 8px;
+    padding: 20px;
 
     border-radius: 14px;
 
     background: #0f172a;
 }
 
-.dash-chart-area span {
-    color: #64748b;
+/* Canvas criado pelo Chart.js */
+
+.dash-chart-area canvas {
+    width: 100% !important;
+    height: 100% !important;
 }
 
 
@@ -376,6 +403,14 @@
     border-radius: 12px;
 
     background: #0f172a;
+
+    transition: 0.2s;
+}
+
+.dash-transaction:hover {
+    transform: translateY(-1px);
+
+    background: #111c31;
 }
 
 .dash-transaction-icon {
@@ -397,15 +432,13 @@
 .dash-transaction-icon.income {
     color: #4ade80;
 
-    background:
-        rgba(34, 197, 94, 0.15);
+    background: rgba(34, 197, 94, 0.15);
 }
 
 .dash-transaction-icon.expense {
     color: #f87171;
 
-    background:
-        rgba(239, 68, 68, 0.15);
+    background: rgba(239, 68, 68, 0.15);
 }
 
 .dash-transaction-info {
@@ -413,6 +446,16 @@
 
     display: flex;
     flex-direction: column;
+
+    min-width: 0;
+}
+
+.dash-transaction-info strong {
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
 }
 
 .dash-transaction-info span {
@@ -425,10 +468,14 @@
 
 .dash-income-value {
     color: #4ade80;
+
+    white-space: nowrap;
 }
 
 .dash-expense-value {
     color: #f87171;
+
+    white-space: nowrap;
 }
 
 
@@ -449,6 +496,7 @@
 }
 
 @media (max-width: 700px) {
+
     .dash-sidebar {
         display: none;
     }
@@ -459,5 +507,28 @@
 
     .dash-user {
         display: none;
+    }
+
+    .dash-header h1 {
+        font-size: 28px;
+    }
+
+    .dash-panel {
+        padding: 18px;
+    }
+
+    .dash-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .dash-chart-area {
+        height: 280px;
+
+        padding: 12px;
+    }
+
+    .dash-transaction {
+        padding: 12px;
     }
 }
