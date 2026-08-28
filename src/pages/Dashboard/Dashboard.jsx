@@ -16,6 +16,7 @@ import {
 
 import { Bar } from "react-chartjs-2";
 
+
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -24,6 +25,7 @@ ChartJS.register(
     Tooltip,
     Legend
 );
+
 
 function Dashboard() {
 
@@ -54,8 +56,8 @@ function Dashboard() {
                 }
 
                 return response.json();
-            })
 
+            })
             .then((data) => {
 
                 if (Array.isArray(data)) {
@@ -73,7 +75,6 @@ function Dashboard() {
                 }
 
             })
-
             .catch((error) => {
 
                 console.error(
@@ -87,8 +88,7 @@ function Dashboard() {
 
 
     /* =========================
-       TOTAIS GERAIS
-       USADOS NOS CARDS
+       TOTAL DE RECEITAS
     ========================= */
 
     const receitas = transacoes
@@ -106,6 +106,10 @@ function Dashboard() {
             0
         );
 
+
+    /* =========================
+       TOTAL DE DESPESAS
+    ========================= */
 
     const despesas = transacoes
 
@@ -127,7 +131,7 @@ function Dashboard() {
 
 
     /* =========================
-       FORMATAR MOEDA
+       FORMATAR DINHEIRO
     ========================= */
 
     const formatarMoeda = (valor) => {
@@ -144,14 +148,14 @@ function Dashboard() {
 
 
     /* =========================
-       FILTRO DO GRÁFICO
+       FILTRAR PERÍODO
     ========================= */
 
     const hoje = new Date();
 
 
-    const transacoesFiltradas = transacoes.filter(
-        (transacao) => {
+    const transacoesFiltradas =
+        transacoes.filter((transacao) => {
 
             const dataTransacao =
                 new Date(transacao.data);
@@ -162,7 +166,6 @@ function Dashboard() {
             if (periodo === "mes") {
 
                 return (
-
                     dataTransacao.getMonth() ===
                         hoje.getMonth()
 
@@ -170,7 +173,6 @@ function Dashboard() {
 
                     dataTransacao.getFullYear() ===
                         hoje.getFullYear()
-
                 );
 
             }
@@ -184,8 +186,10 @@ function Dashboard() {
                     new Date(hoje);
 
                 tresMesesAtras.setMonth(
-                    hoje.getMonth() - 3
+                    hoje.getMonth() - 2
                 );
+
+                tresMesesAtras.setDate(1);
 
                 return (
                     dataTransacao >=
@@ -200,10 +204,8 @@ function Dashboard() {
             if (periodo === "ano") {
 
                 return (
-
                     dataTransacao.getFullYear() ===
                     hoje.getFullYear()
-
                 );
 
             }
@@ -211,48 +213,135 @@ function Dashboard() {
 
             return true;
 
-        }
-    );
+        });
 
 
     /* =========================
-       VALORES DO GRÁFICO
+       NOMES DOS MESES
     ========================= */
 
-    const receitasGrafico =
-        transacoesFiltradas
+    const nomesMeses = [
+        "Jan",
+        "Fev",
+        "Mar",
+        "Abr",
+        "Mai",
+        "Jun",
+        "Jul",
+        "Ago",
+        "Set",
+        "Out",
+        "Nov",
+        "Dez"
+    ];
 
-            .filter(
-                (transacao) =>
-                    transacao.tipo ===
-                    "receita"
-            )
 
-            .reduce(
-                (total, transacao) =>
-                    total +
-                    Number(transacao.valor),
+    /* =========================
+       DEFINIR MESES DO GRÁFICO
+    ========================= */
 
-                0
+    let mesesExibidos = [];
+
+
+    if (periodo === "mes") {
+
+        mesesExibidos = [
+            hoje.getMonth()
+        ];
+
+    }
+
+
+    if (periodo === "3meses") {
+
+        for (let i = 2; i >= 0; i--) {
+
+            const dataMes =
+                new Date(
+                    hoje.getFullYear(),
+                    hoje.getMonth() - i,
+                    1
+                );
+
+            mesesExibidos.push(
+                dataMes.getMonth()
             );
 
+        }
 
-    const despesasGrafico =
-        transacoesFiltradas
+    }
 
-            .filter(
-                (transacao) =>
-                    transacao.tipo ===
-                    "despesa"
-            )
 
-            .reduce(
-                (total, transacao) =>
-                    total +
-                    Number(transacao.valor),
+    if (periodo === "ano") {
 
-                0
-            );
+        mesesExibidos = [
+            0, 1, 2, 3, 4, 5,
+            6, 7, 8, 9, 10, 11
+        ];
+
+    }
+
+
+    /* =========================
+       CALCULAR VALORES POR MÊS
+    ========================= */
+
+    const receitasPorMes =
+        mesesExibidos.map((mes) => {
+
+            return transacoesFiltradas
+
+                .filter((transacao) => {
+
+                    const dataTransacao =
+                        new Date(transacao.data);
+
+                    return (
+                        dataTransacao.getMonth() === mes
+                        &&
+                        transacao.tipo === "receita"
+                    );
+
+                })
+
+                .reduce(
+                    (total, transacao) =>
+                        total +
+                        Number(transacao.valor),
+
+                    0
+                );
+
+        });
+
+
+    const despesasPorMes =
+        mesesExibidos.map((mes) => {
+
+            return transacoesFiltradas
+
+                .filter((transacao) => {
+
+                    const dataTransacao =
+                        new Date(transacao.data);
+
+                    return (
+                        dataTransacao.getMonth() === mes
+                        &&
+                        transacao.tipo === "despesa"
+                    );
+
+                })
+
+                .reduce(
+                    (total, transacao) =>
+                        total +
+                        Number(transacao.valor),
+
+                    0
+                );
+
+        });
 
 
     /* =========================
@@ -261,34 +350,47 @@ function Dashboard() {
 
     const dadosGrafico = {
 
-        labels: [
-            "Receitas",
-            "Despesas"
-        ],
+        labels:
+            mesesExibidos.map(
+                (mes) =>
+                    nomesMeses[mes]
+            ),
 
         datasets: [
 
             {
-                label: "Valor em R$",
+                label: "Receitas",
 
-                data: [
-                    receitasGrafico,
-                    despesasGrafico
-                ],
+                data:
+                    receitasPorMes,
 
-                backgroundColor: [
+                backgroundColor:
                     "rgba(34, 197, 94, 0.75)",
-                    "rgba(239, 68, 68, 0.75)"
-                ],
 
-                borderColor: [
+                borderColor:
                     "rgb(34, 197, 94)",
-                    "rgb(239, 68, 68)"
-                ],
 
                 borderWidth: 1,
 
-                borderRadius: 8
+                borderRadius: 6
+            },
+
+
+            {
+                label: "Despesas",
+
+                data:
+                    despesasPorMes,
+
+                backgroundColor:
+                    "rgba(239, 68, 68, 0.75)",
+
+                borderColor:
+                    "rgb(239, 68, 68)",
+
+                borderWidth: 1,
+
+                borderRadius: 6
             }
 
         ]
@@ -316,14 +418,19 @@ function Dashboard() {
 
             },
 
+
             tooltip: {
 
                 callbacks: {
 
                     label: function (context) {
 
-                        return formatarMoeda(
-                            context.raw
+                        return (
+                            context.dataset.label +
+                            ": " +
+                            formatarMoeda(
+                                context.raw
+                            )
                         );
 
                     }
@@ -386,9 +493,7 @@ function Dashboard() {
         <div className="dash-layout">
 
 
-            {/* =====================
-                SIDEBAR
-            ===================== */}
+            {/* SIDEBAR */}
 
             <aside className="dash-sidebar">
 
@@ -441,9 +546,7 @@ function Dashboard() {
             </aside>
 
 
-            {/* =====================
-                CONTEÚDO
-            ===================== */}
+            {/* CONTEÚDO */}
 
             <div className="dash-main">
 
@@ -489,9 +592,7 @@ function Dashboard() {
                 </header>
 
 
-                {/* =====================
-                    CARDS
-                ===================== */}
+                {/* CARDS */}
 
                 <div className="dash-cards">
 
@@ -550,16 +651,12 @@ function Dashboard() {
                 </div>
 
 
-                {/* =====================
-                    CONTEÚDO INFERIOR
-                ===================== */}
+                {/* CONTEÚDO INFERIOR */}
 
                 <div className="dash-content-grid">
 
 
-                    {/* =====================
-                        GRÁFICO
-                    ===================== */}
+                    {/* GRÁFICO */}
 
                     <div className="dash-panel dash-chart">
 
@@ -618,9 +715,7 @@ function Dashboard() {
                     </div>
 
 
-                    {/* =====================
-                        ÚLTIMAS TRANSAÇÕES
-                    ===================== */}
+                    {/* ÚLTIMAS TRANSAÇÕES */}
 
                     <div className="dash-panel">
 
@@ -728,11 +823,9 @@ function Dashboard() {
 
 
                                                     {formatarMoeda(
-
                                                         Number(
                                                             transacao.valor
                                                         )
-
                                                     )}
 
                                                 </strong>
@@ -763,5 +856,6 @@ function Dashboard() {
     );
 
 }
+
 
 export default Dashboard;
