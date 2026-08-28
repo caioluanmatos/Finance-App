@@ -7,23 +7,38 @@ import "./Login.css";
 import logo from "../../assets/images/Logo/logoapp.png";
 
 function Login() {
+
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
     const [senha, setSenha] = useState("");
 
+
+    // =========================
+    // TESTAR CONEXÃO COM API
+    // =========================
+
     useEffect(() => {
+
         fetch("http://localhost:3000")
-            .then((response) => response.text())
+
+            .then((response) =>
+                response.text()
+            )
+
             .then((data) => {
                 console.log(data);
             })
+
             .catch((error) => {
+
                 console.error(
                     "Erro ao conectar com a API:",
                     error
                 );
+
             });
+
     }, []);
 
 
@@ -32,9 +47,12 @@ function Login() {
     // =========================
 
     function handleSubmit(event) {
+
         event.preventDefault();
 
+
         fetch("http://localhost:3000/login", {
+
             method: "POST",
 
             headers: {
@@ -45,16 +63,21 @@ function Login() {
                 email,
                 senha,
             }),
+
         })
+
             .then((response) => {
 
                 if (!response.ok) {
+
                     throw new Error(
                         "E-mail ou senha inválidos"
                     );
+
                 }
 
                 return response.json();
+
             })
 
             .then((data) => {
@@ -64,10 +87,16 @@ function Login() {
                     data
                 );
 
+
+                // SALVAR TOKEN
+
                 localStorage.setItem(
                     "token",
                     data.token
                 );
+
+
+                // SALVAR NOME
 
                 if (data.usuario?.nome) {
 
@@ -78,10 +107,15 @@ function Login() {
 
                 }
 
+
                 // Login normal não usa foto Google
+
                 localStorage.removeItem(
                     "fotoUsuario"
                 );
+
+
+                // IR PARA DASHBOARD
 
                 navigate("/dashboard");
 
@@ -99,6 +133,7 @@ function Login() {
                 );
 
             });
+
     }
 
 
@@ -130,6 +165,7 @@ function Login() {
         fetch(
             "http://localhost:3000/login/google",
             {
+
                 method: "POST",
 
                 headers: {
@@ -138,9 +174,12 @@ function Login() {
                 },
 
                 body: JSON.stringify({
+
                     credential:
                         credentialResponse.credential,
+
                 }),
+
             }
         )
 
@@ -264,6 +303,8 @@ function Login() {
 
             <section>
 
+                {/* LOGO */}
+
                 <div className="logo-area">
 
                     <img
@@ -286,7 +327,9 @@ function Login() {
                 <form onSubmit={handleSubmit}>
 
 
-                    {/* EMAIL */}
+                    {/* =========================
+                        EMAIL
+                    ========================= */}
 
                     <label htmlFor="email">
                         E-mail
@@ -315,7 +358,9 @@ function Login() {
                     </div>
 
 
-                    {/* SENHA */}
+                    {/* =========================
+                        SENHA
+                    ========================= */}
 
                     <label htmlFor="password">
                         Senha
@@ -344,7 +389,22 @@ function Login() {
                     </div>
 
 
-                    {/* LEMBRAR */}
+                    {/* =========================
+                        ESQUECEU A SENHA
+                    ========================= */}
+
+                    <div className="forgot-password">
+
+                        <Link to="/recuperar-senha">
+                            Esqueceu sua senha?
+                        </Link>
+
+                    </div>
+
+
+                    {/* =========================
+                        LEMBRAR
+                    ========================= */}
 
                     <div className="remember-me">
 
@@ -361,7 +421,9 @@ function Login() {
                     </div>
 
 
-                    {/* LOGIN NORMAL */}
+                    {/* =========================
+                        LOGIN NORMAL
+                    ========================= */}
 
                     <button type="submit">
 
@@ -370,7 +432,9 @@ function Login() {
                     </button>
 
 
-                    {/* LOGIN GOOGLE */}
+                    {/* =========================
+                        LOGIN GOOGLE
+                    ========================= */}
 
                     <div className="google-login-area">
 
@@ -404,7 +468,9 @@ function Login() {
                     </div>
 
 
-                    {/* CADASTRO */}
+                    {/* =========================
+                        CADASTRO
+                    ========================= */}
 
                     <div className="register-link">
 
@@ -413,9 +479,7 @@ function Login() {
                         </p>
 
                         <Link to="/cadastro">
-
                             Criar conta
-
                         </Link>
 
                     </div>

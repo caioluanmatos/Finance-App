@@ -381,3 +381,26 @@ form > button:hover {
         font-size: 28px;
     }
 }
+
+/* ==============================
+   ESQUECEU A SENHA
+============================== */
+
+.forgot-password {
+    width: 100%;
+    text-align: right;
+    margin-top: 8px;
+    margin-bottom: 12px;
+}
+
+.forgot-password a {
+    color: #a78bfa;
+    font-size: 14px;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.forgot-password a:hover {
+    color: #c4b5fd;
+    text-decoration: underline;
+}

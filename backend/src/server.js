@@ -77,6 +77,388 @@ function verificarToken(req, res, next) {
     }
 }
 
+// ========================================
+// ESQUECI A SENHA - ENVIAR CÓDIGO
+// ========================================
+
+app.post("/esqueci-senha/enviar-codigo", (req, res) => {
+
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({
+            mensagem: "Digite seu e-mail!"
+        });
+    }
+
+    // Procura o usuário pelo e-mail
+    const sql = `
+        SELECT id, nome, email
+        FROM usuarios
+        WHERE email = ?
+    `;
+
+    connection.query(
+        sql,
+        [email],
+        async (error, result) => {
+
+            if (error) {
+                console.log(
+                    "Erro ao buscar usuário:",
+                    error
+                );
+
+                return res.status(500).json({
+                    mensagem: "Erro interno do servidor!"
+                });
+            }
+
+            if (result.length === 0) {
+                return res.status(404).json({
+                    mensagem: "E-mail não encontrado!"
+                });
+            }
+
+            const usuario = result[0];
+
+            // Gera código de 6 dígitos
+            const codigo = Math.floor(
+                100000 + Math.random() * 900000
+            ).toString();
+
+            // Código válido por 10 minutos
+            const expiraEm =
+                Date.now() + 10 * 60 * 1000;
+
+            // Guarda temporariamente
+            codigosSenha.set(email, {
+                codigo,
+                expiraEm,
+                usuarioId: usuario.id
+            });
+
+            try {
+
+                // Envia o e-mail
+                await transporter.sendMail({
+
+                    from: `"Finance App" <${process.env.EMAIL_USER}>`,
+
+                    to: usuario.email,
+
+                    subject:
+                        "Código para redefinir sua senha",
+
+                    html: `
+                        <div
+                            style="
+                                font-family: Arial, sans-serif;
+                                max-width: 500px;
+                                margin: auto;
+                                padding: 30px;
+                                background: #0f172a;
+                                color: white;
+                                border-radius: 12px;
+                            "
+                        >
+
+                            <h2
+                                style="
+                                    color: #8b5cf6;
+                                "
+                            >
+                                Finance App
+                            </h2>
+
+                            <p>
+                                Olá, ${usuario.nome}!
+                            </p>
+
+                            <p>
+                                Recebemos uma solicitação
+                                para redefinir sua senha.
+                            </p>
+
+                            <p>
+                                Seu código de verificação é:
+                            </p>
+
+                            <div
+                                style="
+                                    font-size: 32px;
+                                    font-weight: bold;
+                                    letter-spacing: 8px;
+                                    color: #a78bfa;
+                                    margin: 25px 0;
+                                "
+                            >
+                                ${codigo}
+                            </div>
+
+                            <p>
+                                Esse código é válido por
+                                10 minutos.
+                            </p>
+
+                            <p
+                                style="
+                                    color: #94a3b8;
+                                    font-size: 13px;
+                                "
+                            >
+                                Se você não solicitou a
+                                alteração da senha,
+                                ignore este e-mail.
+                            </p>
+
+                        </div>
+                    `
+                });
+
+                return res.status(200).json({
+                    mensagem:
+                        "Código enviado para seu e-mail!"
+                });
+
+            } catch (errorEmail) {
+
+                console.log(
+                    "Erro ao enviar e-mail:",
+                    errorEmail
+                );
+
+                // Se o envio falhar,
+                // remove o código criado
+                codigosSenha.delete(email);
+
+                return res.status(500).json({
+                    mensagem:
+                        "Não foi possível enviar o código."
+                });
+            }
+        }
+    );
+});
+
+
+// ========================================
+// ESQUECI A SENHA - VERIFICAR CÓDIGO
+// ========================================
+
+app.post("/esqueci-senha/verificar-codigo", (req, res) => {
+
+    const {
+        email,
+        codigo
+    } = req.body;
+
+
+    if (!email || !codigo) {
+        return res.status(400).json({
+            mensagem: "Informe o e-mail e o código!"
+        });
+    }
+
+
+    const dadosCodigo = codigosSenha.get(email);
+
+
+    // Verifica se existe código para esse e-mail
+    if (!dadosCodigo) {
+        return res.status(400).json({
+            mensagem:
+                "Nenhum código foi solicitado para esse e-mail!"
+        });
+    }
+
+
+    // Verifica se expirou
+    if (Date.now() > dadosCodigo.expiraEm) {
+
+        codigosSenha.delete(email);
+
+        return res.status(400).json({
+            mensagem:
+                "O código expirou. Solicite um novo código!"
+        });
+    }
+
+
+    // Verifica se o código está correto
+    if (String(codigo) !== String(dadosCodigo.codigo)) {
+        return res.status(400).json({
+            mensagem:
+                "Código inválido!"
+        });
+    }
+
+
+    // Marca o código como verificado
+    dadosCodigo.verificado = true;
+
+    codigosSenha.set(
+        email,
+        dadosCodigo
+    );
+
+
+    return res.status(200).json({
+        mensagem:
+            "Código verificado com sucesso!"
+    });
+
+});
+
+
+// ========================================
+// ESQUECI A SENHA - REDEFINIR SENHA
+// ========================================
+
+app.post("/esqueci-senha/redefinir", async (req, res) => {
+
+    const {
+        email,
+        novaSenha,
+        confirmarSenha
+    } = req.body;
+
+
+    // Verifica os campos
+    if (!email || !novaSenha || !confirmarSenha) {
+        return res.status(400).json({
+            mensagem: "Preencha todos os campos!"
+        });
+    }
+
+
+    // Verifica se as senhas são iguais
+    if (novaSenha !== confirmarSenha) {
+        return res.status(400).json({
+            mensagem:
+                "A nova senha e a confirmação não são iguais!"
+        });
+    }
+
+
+    // Tamanho mínimo da senha
+    if (novaSenha.length < 6) {
+        return res.status(400).json({
+            mensagem:
+                "A nova senha precisa ter pelo menos 6 caracteres!"
+        });
+    }
+
+
+    // Busca o código que foi enviado
+    const dadosCodigo = codigosSenha.get(email);
+
+
+    if (!dadosCodigo) {
+        return res.status(400).json({
+            mensagem:
+                "Solicitação de recuperação não encontrada!"
+        });
+    }
+
+
+    // Verifica novamente se expirou
+    if (Date.now() > dadosCodigo.expiraEm) {
+
+        codigosSenha.delete(email);
+
+        return res.status(400).json({
+            mensagem:
+                "O código expirou. Solicite um novo código!"
+        });
+    }
+
+
+    // Só permite trocar a senha se o código
+    // já tiver sido verificado
+    if (!dadosCodigo.verificado) {
+        return res.status(400).json({
+            mensagem:
+                "Verifique o código antes de redefinir a senha!"
+        });
+    }
+
+
+    try {
+
+        // Criptografa a nova senha
+        const novaSenhaHash =
+            await bcrypt.hash(
+                novaSenha,
+                10
+            );
+
+
+        const sql = `
+            UPDATE usuarios
+            SET senha = ?
+            WHERE id = ?
+        `;
+
+
+        connection.query(
+            sql,
+            [
+                novaSenhaHash,
+                dadosCodigo.usuarioId
+            ],
+            (error, result) => {
+
+                if (error) {
+
+                    console.log(
+                        "Erro ao redefinir senha:",
+                        error
+                    );
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao redefinir senha!"
+                    });
+                }
+
+
+                if (result.affectedRows === 0) {
+                    return res.status(404).json({
+                        mensagem:
+                            "Usuário não encontrado!"
+                    });
+                }
+
+
+                // Código não pode ser reutilizado
+                codigosSenha.delete(email);
+
+
+                return res.status(200).json({
+                    mensagem:
+                        "Senha redefinida com sucesso!"
+                });
+
+            }
+        );
+
+    } catch (error) {
+
+        console.log(
+            "Erro ao criptografar nova senha:",
+            error
+        );
+
+        return res.status(500).json({
+            mensagem:
+                "Erro ao redefinir senha!"
+        });
+    }
+
+});
+
+
 
 // ========================================
 // ROTA INICIAL

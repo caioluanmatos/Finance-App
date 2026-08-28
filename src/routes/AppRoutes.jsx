@@ -8,6 +8,7 @@ import Receitas from "../pages/Receitas/Receitas";
 import Despesas from "../pages/Despesas/Despesas";
 import Metas from "../pages/Metas/Metas";
 import Perfil from "../pages/Perfil/Perfil";
+import Recuperacao from "../pages/Recuperacao/recuperacao";
 
 function AppRoutes() {
     return (
@@ -53,6 +54,11 @@ function AppRoutes() {
                 <Route
                     path="/perfil"
                     element={<Perfil />}
+                />
+
+                <Route
+                    path="/recuperar-senha"
+                    element={<Recuperacao />}
                 />
 
             </Routes>
