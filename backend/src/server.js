@@ -971,6 +971,351 @@ app.put(
     }
 );
 
+// ========================================
+// CADASTRAR META
+// ========================================
+
+app.post(
+    "/metas",
+    verificarToken,
+    (req, res) => {
+
+        const {
+            nome,
+            valor_meta,
+            valor_atual = 0
+        } = req.body;
+
+        const usuarioId =
+            req.usuarioId;
+
+
+        if (
+            !nome ||
+            valor_meta === undefined
+        ) {
+
+            return res.status(400).json({
+                mensagem:
+                    "Informe o nome e o valor da meta!"
+            });
+
+        }
+
+
+        if (
+            Number(valor_meta) <= 0 ||
+            Number(valor_atual) < 0
+        ) {
+
+            return res.status(400).json({
+                mensagem:
+                    "Os valores da meta são inválidos!"
+            });
+
+        }
+
+
+        const sql = `
+            INSERT INTO metas
+            (
+                nome,
+                valor_meta,
+                valor_atual,
+                usuario_id
+            )
+            VALUES (?, ?, ?, ?)
+        `;
+
+
+        connection.query(
+            sql,
+            [
+                nome,
+                valor_meta,
+                valor_atual,
+                usuarioId
+            ],
+            (error, result) => {
+
+                if (error) {
+
+                    console.log(
+                        "Erro ao cadastrar meta:",
+                        error
+                    );
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao cadastrar meta!"
+                    });
+
+                }
+
+
+                return res.status(201).json({
+
+                    mensagem:
+                        "Meta cadastrada com sucesso!",
+
+                    metaId:
+                        result.insertId
+
+                });
+
+            }
+        );
+
+    }
+);
+
+
+// ========================================
+// LISTAR METAS
+// ========================================
+
+app.get(
+    "/metas",
+    verificarToken,
+    (req, res) => {
+
+        const usuarioId =
+            req.usuarioId;
+
+
+        const sql = `
+            SELECT *
+            FROM metas
+            WHERE usuario_id = ?
+            ORDER BY criado_em DESC
+        `;
+
+
+        connection.query(
+            sql,
+            [usuarioId],
+            (error, result) => {
+
+                if (error) {
+
+                    console.log(
+                        "Erro ao listar metas:",
+                        error
+                    );
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao buscar metas!"
+                    });
+
+                }
+
+
+                return res.status(200).json(
+                    result
+                );
+
+            }
+        );
+
+    }
+);
+
+
+// ========================================
+// EDITAR META
+// ========================================
+
+app.put(
+    "/metas/:id",
+    verificarToken,
+    (req, res) => {
+
+        const id =
+            req.params.id;
+
+        const {
+            nome,
+            valor_meta,
+            valor_atual
+        } = req.body;
+
+        const usuarioId =
+            req.usuarioId;
+
+
+        if (
+            !nome ||
+            valor_meta === undefined ||
+            valor_atual === undefined
+        ) {
+
+            return res.status(400).json({
+                mensagem:
+                    "Preencha todos os campos da meta!"
+            });
+
+        }
+
+
+        if (
+            Number(valor_meta) <= 0 ||
+            Number(valor_atual) < 0
+        ) {
+
+            return res.status(400).json({
+                mensagem:
+                    "Os valores da meta são inválidos!"
+            });
+
+        }
+
+
+        const sql = `
+            UPDATE metas
+
+            SET
+                nome = ?,
+                valor_meta = ?,
+                valor_atual = ?
+
+            WHERE id = ?
+            AND usuario_id = ?
+        `;
+
+
+        connection.query(
+            sql,
+            [
+                nome,
+                valor_meta,
+                valor_atual,
+                id,
+                usuarioId
+            ],
+            (error, result) => {
+
+                if (error) {
+
+                    console.log(
+                        "Erro ao editar meta:",
+                        error
+                    );
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao editar meta!"
+                    });
+
+                }
+
+
+                if (
+                    result.affectedRows === 0
+                ) {
+
+                    return res.status(404).json({
+                        mensagem:
+                            "Meta não encontrada!"
+                    });
+
+                }
+
+
+                return res.status(200).json({
+                    mensagem:
+                        "Meta editada com sucesso!"
+                });
+
+            }
+        );
+
+    }
+);
+
+
+// ========================================
+// EXCLUIR META
+// ========================================
+
+app.delete(
+    "/metas/:id",
+    verificarToken,
+    (req, res) => {
+
+        const id =
+            req.params.id;
+
+        const usuarioId =
+            req.usuarioId;
+
+
+        const sql = `
+            DELETE FROM metas
+            WHERE id = ?
+            AND usuario_id = ?
+        `;
+
+
+        connection.query(
+            sql,
+            [
+                id,
+                usuarioId
+            ],
+            (error, result) => {
+
+                if (error) {
+
+                    console.log(
+                        "Erro ao excluir meta:",
+                        error
+                    );
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao excluir meta!"
+                    });
+
+                }
+
+
+                if (
+                    result.affectedRows === 0
+                ) {
+
+                    return res.status(404).json({
+                        mensagem:
+                            "Meta não encontrada!"
+                    });
+
+                }
+
+
+                return res.status(200).json({
+                    mensagem:
+                        "Meta excluída com sucesso!"
+                });
+
+            }
+        );
+
+    }
+);
+
+
+// ========================================
+// SERVIDOR
+// ========================================
+
+app.listen(3000, () => {
+
+    console.log(
+        "Servidor rodando na porta 3000"
+    );
+
+});
+
 
 // ========================================
 // SERVIDOR

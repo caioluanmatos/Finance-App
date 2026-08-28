@@ -10,8 +10,8 @@ function Transacoes() {
 
     const [transacoes, setTransacoes] = useState([]);
 
-    // ID da transação que está sendo editada
     const [editandoId, setEditandoId] = useState(null);
+
 
     // =========================
     // Buscar transações
@@ -41,6 +41,7 @@ function Transacoes() {
             });
     }, []);
 
+
     // =========================
     // Criar ou editar transação
     // =========================
@@ -48,16 +49,16 @@ function Transacoes() {
     function handleSubmit(event) {
         event.preventDefault();
 
-        // Se existir um ID sendo editado,
-        // fazemos PUT
         if (editandoId !== null) {
 
             fetch(
                 `http://localhost:3000/transacoes/${editandoId}`,
                 {
                     method: "PUT",
+
                     headers: {
                         "Content-Type": "application/json",
+
                         Authorization:
                             "Bearer " +
                             localStorage.getItem("token")
@@ -90,7 +91,6 @@ function Transacoes() {
                         "Transação editada com sucesso!"
                     );
 
-                    // Atualiza a transação na tela
                     setTransacoes((listaAtual) =>
                         listaAtual.map((transacao) =>
                             transacao.id === editandoId
@@ -118,6 +118,7 @@ function Transacoes() {
             return;
         }
 
+
         // =========================
         // Criar nova transação
         // =========================
@@ -127,6 +128,7 @@ function Transacoes() {
 
             headers: {
                 "Content-Type": "application/json",
+
                 Authorization:
                     "Bearer " +
                     localStorage.getItem("token")
@@ -158,8 +160,6 @@ function Transacoes() {
                     "Transação adicionada com sucesso!"
                 );
 
-                // Coloca a nova transação
-                // imediatamente na lista
                 setTransacoes((listaAtual) => [
                     {
                         id: dataResposta.transacaoId,
@@ -183,6 +183,7 @@ function Transacoes() {
             });
     }
 
+
     // =========================
     // Selecionar para editar
     // =========================
@@ -194,8 +195,6 @@ function Transacoes() {
         setValor(transacao.valor);
         setTipo(transacao.tipo);
 
-        // MySQL pode devolver data com horário.
-        // O input type="date" precisa de YYYY-MM-DD.
         setData(
             String(transacao.data).split("T")[0]
         );
@@ -206,6 +205,7 @@ function Transacoes() {
         });
     }
 
+
     // =========================
     // Cancelar edição
     // =========================
@@ -213,6 +213,7 @@ function Transacoes() {
     function handleCancelarEdicao() {
         limparFormulario();
     }
+
 
     // =========================
     // Limpar formulário
@@ -226,6 +227,7 @@ function Transacoes() {
 
         setEditandoId(null);
     }
+
 
     // =========================
     // Excluir transação
@@ -278,8 +280,6 @@ function Transacoes() {
                     )
                 );
 
-                // Caso esteja editando
-                // justamente a transação excluída
                 if (editandoId === id) {
                     limparFormulario();
                 }
@@ -293,248 +293,365 @@ function Transacoes() {
             });
     }
 
+
+    // =========================
+    // Logout
+    // =========================
+
+    function handleLogout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("nomeUsuario");
+        localStorage.removeItem("fotoUsuario");
+
+        window.location.href = "/";
+    }
+
+
+    // =========================
+    // Tela
+    // =========================
+
     return (
-        <div className="transacoes-page">
+        <div className="transacoes-layout">
 
-            <div className="transacoes-topo">
+            {/* SIDEBAR */}
 
-                <Link
-                    to="/dashboard"
-                    className="btn-voltar"
-                >
-                    Voltar
-                </Link>
+            <aside className="transacoes-sidebar">
 
-                <div>
-                    <h1>Transações</h1>
+                <h2>
+                    Finance App
+                </h2>
 
-                    <p>
-                        Gerencie suas receitas e despesas
-                    </p>
-                </div>
+                <nav>
 
-            </div>
+                    <Link to="/dashboard">
+                        Dashboard
+                    </Link>
 
-            <form
-                className="transacoes-form"
-                onSubmit={handleSubmit}
-            >
-
-                <div>
-                    <label>Descrição</label>
-
-                    <input
-                        type="text"
-                        placeholder="Ex: Mercado"
-                        value={descricao}
-                        onChange={(e) =>
-                            setDescricao(e.target.value)
-                        }
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Valor</label>
-
-                    <input
-                        type="number"
-                        step="0.01"
-                        placeholder="R$ 0,00"
-                        value={valor}
-                        onChange={(e) =>
-                            setValor(e.target.value)
-                        }
-                        required
-                    />
-                </div>
-
-                <div>
-                    <label>Tipo</label>
-
-                    <select
-                        value={tipo}
-                        onChange={(e) =>
-                            setTipo(e.target.value)
-                        }
+                    <Link
+                        to="/transacoes"
+                        className="transacoes-active"
                     >
-                        <option value="receita">
-                            Receita
-                        </option>
+                        Transações
+                    </Link>
 
-                        <option value="despesa">
-                            Despesa
-                        </option>
+                    <Link to="/receitas">
+                        Receitas
+                    </Link>
 
-                    </select>
-                </div>
+                    <Link to="/despesas">
+                        Despesas
+                    </Link>
 
-                <div>
-                    <label>Data</label>
+                    <Link to="/metas">
+                        Metas
+                    </Link>
 
-                    <input
-                        type="date"
-                        value={data}
-                        onChange={(e) =>
-                            setData(e.target.value)
-                        }
-                        required
-                    />
-                </div>
+                    <Link to="/perfil">
+                        Perfil
+                    </Link>
 
-                <button type="submit">
-                    {editandoId !== null
-                        ? "Salvar alterações"
-                        : "Adicionar transação"}
+                </nav>
+
+
+                <button
+                    className="transacoes-sair"
+                    onClick={handleLogout}
+                >
+                    Sair
                 </button>
 
-                {editandoId !== null && (
-                    <button
-                        type="button"
-                        className="btn-cancelar"
-                        onClick={
-                            handleCancelarEdicao
-                        }
-                    >
-                        Cancelar edição
-                    </button>
-                )}
+            </aside>
 
-            </form>
 
-            <div className="transacoes-lista">
+            {/* CONTEÚDO */}
 
-                <div className="transacoes-lista-header">
+            <div className="transacoes-page">
+
+
+                <div className="transacoes-topo">
 
                     <div>
-                        <span>Histórico</span>
 
-                        <h2>
-                            Minhas transações
-                        </h2>
+                        <h1>
+                            Transações
+                        </h1>
 
                         <p>
-                            Acompanhe suas últimas movimentações financeiras.
+                            Gerencie suas receitas e despesas
                         </p>
+
                     </div>
 
                 </div>
 
-                {transacoes.length === 0 ? (
 
-                    <div className="transacoes-vazia">
+                {/* FORMULÁRIO */}
 
-                        <p>
-                            Nenhuma transação encontrada.
-                        </p>
+                <form
+                    className="transacoes-form"
+                    onSubmit={handleSubmit}
+                >
+
+                    <div>
+
+                        <label>
+                            Descrição
+                        </label>
+
+                        <input
+                            type="text"
+                            placeholder="Ex: Mercado"
+                            value={descricao}
+                            onChange={(e) =>
+                                setDescricao(e.target.value)
+                            }
+                            required
+                        />
 
                     </div>
 
-                ) : (
 
-                    <div className="transacoes-items">
+                    <div>
 
-                        {transacoes.map(
-                            (transacao) => (
+                        <label>
+                            Valor
+                        </label>
 
-                                <div
-                                    key={
-                                        transacao.id
-                                    }
-                                    className="transacao-item"
-                                >
+                        <input
+                            type="number"
+                            step="0.01"
+                            placeholder="R$ 0,00"
+                            value={valor}
+                            onChange={(e) =>
+                                setValor(e.target.value)
+                            }
+                            required
+                        />
 
-                                    <div className="transacao-info">
+                    </div>
 
-                                        <div
-                                            className={`transacao-icon ${
+
+                    <div>
+
+                        <label>
+                            Tipo
+                        </label>
+
+                        <select
+                            value={tipo}
+                            onChange={(e) =>
+                                setTipo(e.target.value)
+                            }
+                        >
+
+                            <option value="receita">
+                                Receita
+                            </option>
+
+                            <option value="despesa">
+                                Despesa
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label>
+                            Data
+                        </label>
+
+                        <input
+                            type="date"
+                            value={data}
+                            onChange={(e) =>
+                                setData(e.target.value)
+                            }
+                            required
+                        />
+
+                    </div>
+
+
+                    <button type="submit">
+
+                        {editandoId !== null
+                            ? "Salvar alterações"
+                            : "Adicionar transação"}
+
+                    </button>
+
+
+                    {editandoId !== null && (
+
+                        <button
+                            type="button"
+                            className="btn-cancelar"
+                            onClick={
+                                handleCancelarEdicao
+                            }
+                        >
+                            Cancelar edição
+                        </button>
+
+                    )}
+
+                </form>
+
+
+                {/* HISTÓRICO */}
+
+                <div className="transacoes-lista">
+
+                    <div className="transacoes-lista-header">
+
+                        <div>
+
+                            <span>
+                                Histórico
+                            </span>
+
+                            <h2>
+                                Minhas transações
+                            </h2>
+
+                            <p>
+                                Acompanhe suas últimas movimentações financeiras.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    {transacoes.length === 0 ? (
+
+                        <div className="transacoes-vazia">
+
+                            <p>
+                                Nenhuma transação encontrada.
+                            </p>
+
+                        </div>
+
+                    ) : (
+
+                        <div className="transacoes-items">
+
+                            {transacoes.map(
+                                (transacao) => (
+
+                                    <div
+                                        key={transacao.id}
+                                        className="transacao-item"
+                                    >
+
+                                        <div className="transacao-info">
+
+                                            <div
+                                                className={`transacao-icon ${
+                                                    transacao.tipo ===
+                                                    "receita"
+                                                        ? "receita"
+                                                        : "despesa"
+                                                }`}
+                                            >
+
+                                                {transacao.tipo ===
+                                                "receita"
+                                                    ? "+"
+                                                    : "-"}
+
+                                            </div>
+
+
+                                            <div>
+
+                                                <strong>
+                                                    {
+                                                        transacao.descricao
+                                                    }
+                                                </strong>
+
+                                                <span>
+
+                                                    {transacao.tipo ===
+                                                    "receita"
+                                                        ? "Receita"
+                                                        : "Despesa"}
+
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <strong
+                                            className={
                                                 transacao.tipo ===
                                                 "receita"
-                                                    ? "receita"
-                                                    : "despesa"
-                                            }`}
+                                                    ? "transacao-valor receita"
+                                                    : "transacao-valor despesa"
+                                            }
                                         >
+
                                             {transacao.tipo ===
                                             "receita"
                                                 ? "+"
-                                                : "-"}
-                                        </div>
+                                                : "-"}{" "}
 
-                                        <div>
+                                            R${" "}
 
-                                            <strong>
+                                            {Number(
+                                                transacao.valor
+                                            ).toLocaleString(
+                                                "pt-BR",
                                                 {
-                                                    transacao.descricao
+                                                    minimumFractionDigits: 2,
+                                                    maximumFractionDigits: 2
                                                 }
-                                            </strong>
+                                            )}
 
-                                            <span>
-                                                {transacao.tipo ===
-                                                "receita"
-                                                    ? "Receita"
-                                                    : "Despesa"}
-                                            </span>
+                                        </strong>
 
-                                        </div>
+
+                                        <button
+                                            className="btn-editar"
+                                            onClick={() =>
+                                                handleEditar(
+                                                    transacao
+                                                )
+                                            }
+                                        >
+                                            Editar
+                                        </button>
+
+
+                                        <button
+                                            className="btn-excluir"
+                                            onClick={() =>
+                                                handleExcluir(
+                                                    transacao.id
+                                                )
+                                            }
+                                        >
+                                            Excluir
+                                        </button>
 
                                     </div>
 
-                                    <strong
-                                        className={
-                                            transacao.tipo ===
-                                            "receita"
-                                                ? "transacao-valor receita"
-                                                : "transacao-valor despesa"
-                                        }
-                                    >
+                                )
+                            )}
 
-                                        {transacao.tipo ===
-                                        "receita"
-                                            ? "+"
-                                            : "-"}{" "}
+                        </div>
 
-                                        R${" "}
+                    )}
 
-                                        {Number(
-                                            transacao.valor
-                                        ).toLocaleString(
-                                            "pt-BR",
-                                            {
-                                                minimumFractionDigits: 2,
-                                                maximumFractionDigits: 2
-                                            }
-                                        )}
-
-                                    </strong>
-
-                                    <button
-                                        className="btn-editar"
-                                        onClick={() =>
-                                            handleEditar(
-                                                transacao
-                                            )
-                                        }
-                                    >
-                                        Editar
-                                    </button>
-
-                                    <button
-                                        className="btn-excluir"
-                                        onClick={() =>
-                                            handleExcluir(
-                                                transacao.id
-                                            )
-                                        }
-                                    >
-                                        Excluir
-                                    </button>
-
-                                </div>
-                            )
-                        )}
-
-                    </div>
-                )}
+                </div>
 
             </div>
 

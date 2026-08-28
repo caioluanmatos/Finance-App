@@ -6,6 +6,7 @@ import Dashboard from "../pages/Dashboard/Dashboard";
 import Transacoes from "../pages/Transacoes/Transacoes";
 import Receitas from "../pages/Receitas/Receitas";
 import Despesas from "../pages/Despesas/Despesas";
+import Metas from "../pages/Metas/Metas";
 
 function AppRoutes() {
     return (
@@ -41,6 +42,11 @@ function AppRoutes() {
                 <Route
                     path="/despesas"
                     element={<Despesas />}
+                />
+
+                <Route
+                    path="/metas"
+                    element={<Metas />}
                 />
 
             </Routes>

@@ -1,11 +1,138 @@
+.transacoes-layout {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+
+    background: linear-gradient(
+        135deg,
+        #0f172a,
+        #1e1b4b,
+        #4c1d95
+    );
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.transacoes-sidebar {
+    width: 248px;
+    min-width: 248px;
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    padding: 32px 19px 25px;
+
+    background: #0b1220;
+
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+
+    box-sizing: border-box;
+}
+
+.transacoes-sidebar h2 {
+    margin: 0 14px 38px;
+
+    color: #ffffff;
+
+    font-size: 24px;
+    font-weight: 700;
+}
+
+
+/* Links */
+
+.transacoes-sidebar nav {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.transacoes-sidebar nav a {
+    display: block;
+
+    padding: 13px 16px;
+
+    border-radius: 10px;
+
+    color: #93b4d8;
+
+    font-size: 16px;
+
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+.transacoes-sidebar nav a:hover {
+    color: #ffffff;
+
+    background: rgba(124, 58, 237, 0.12);
+}
+
+
+/* Página ativa */
+
+.transacoes-sidebar nav a.transacoes-active {
+    color: #ffffff;
+
+    background: linear-gradient(
+        135deg,
+        #4f46e5,
+        #7c3aed
+    );
+}
+
+
+/* Botão sair */
+
+.transacoes-sair {
+    width: 100%;
+
+    margin-top: auto;
+
+    padding: 13px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: rgba(239, 68, 68, 0.12);
+
+    color: #ff5c6c;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.transacoes-sair:hover {
+    background: rgba(239, 68, 68, 0.20);
+}
+
+
+/* =========================
+   PÁGINA
+========================= */
+
 .transacoes-page {
+    flex: 1;
+
+    min-width: 0;
     min-height: 100vh;
 
     display: flex;
     flex-direction: column;
     align-items: center;
 
-    padding: 40px 24px;
+    padding: 40px 40px;
 
     background: linear-gradient(
         135deg,
@@ -15,6 +142,8 @@
     );
 
     color: #f8fafc;
+
+    box-sizing: border-box;
 }
 
 
@@ -27,34 +156,6 @@
     max-width: 1100px;
 
     margin: 0 auto 28px;
-}
-
-.btn-voltar {
-    display: inline-flex;
-    align-items: center;
-
-    margin-bottom: 24px;
-    padding: 10px 16px;
-
-    color: #c4b5fd;
-    background: rgba(124, 58, 237, 0.12);
-
-    border: 1px solid rgba(139, 92, 246, 0.25);
-    border-radius: 10px;
-
-    font-size: 14px;
-    font-weight: 600;
-
-    text-decoration: none;
-
-    transition: 0.2s;
-}
-
-.btn-voltar:hover {
-    color: #ffffff;
-    background: #7c3aed;
-
-    transform: translateX(-3px);
 }
 
 .transacoes-topo h1 {
@@ -97,6 +198,8 @@
     border-radius: 20px;
 
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+
+    box-sizing: border-box;
 }
 
 .transacoes-form div {
@@ -130,6 +233,8 @@
     font-size: 15px;
 
     transition: 0.2s;
+
+    box-sizing: border-box;
 }
 
 .transacoes-form input::placeholder {
@@ -145,7 +250,9 @@
 }
 
 
-/* Botão principal */
+/* =========================
+   BOTÃO PRINCIPAL
+========================= */
 
 .transacoes-form button[type="submit"] {
     grid-column: 1 / -1;
@@ -183,7 +290,9 @@
 }
 
 
-/* Cancelar edição */
+/* =========================
+   CANCELAR EDIÇÃO
+========================= */
 
 .btn-cancelar {
     grid-column: 1 / -1;
@@ -231,10 +340,14 @@
     border-radius: 20px;
 
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28);
+
+    box-sizing: border-box;
 }
 
 
-/* Cabeçalho da lista */
+/* =========================
+   CABEÇALHO DA LISTA
+========================= */
 
 .transacoes-lista-header {
     display: flex;
@@ -314,7 +427,9 @@
 }
 
 
-/* Informações */
+/* =========================
+   INFORMAÇÕES
+========================= */
 
 .transacao-info {
     display: flex;
@@ -490,7 +605,44 @@
    RESPONSIVO
 ========================= */
 
+@media (max-width: 900px) {
+
+    .transacoes-sidebar {
+        width: 210px;
+        min-width: 210px;
+    }
+
+    .transacoes-page {
+        padding: 32px 20px;
+    }
+}
+
+
 @media (max-width: 760px) {
+
+    .transacoes-layout {
+        display: block;
+    }
+
+    .transacoes-sidebar {
+        width: 100%;
+        min-width: 100%;
+        min-height: auto;
+
+        padding: 20px;
+    }
+
+    .transacoes-sidebar h2 {
+        margin: 0 0 20px;
+    }
+
+    .transacoes-sidebar nav {
+        gap: 6px;
+    }
+
+    .transacoes-sair {
+        margin-top: 20px;
+    }
 
     .transacoes-page {
         padding: 24px 16px;

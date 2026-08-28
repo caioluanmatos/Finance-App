@@ -1,0 +1,754 @@
+/* =========================================
+   PÁGINA
+========================================= */
+
+.metas-layout {
+    min-height: 100vh;
+    display: flex;
+    background: #0f172a;
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.metas-sidebar {
+    width: 240px;
+    min-height: 100vh;
+    padding: 28px 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    background: #111827;
+
+    border-right:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+}
+
+
+.metas-sidebar h2 {
+    margin: 0 0 35px;
+
+    font-size: 23px;
+    color: #ffffff;
+}
+
+
+.metas-sidebar nav {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.metas-sidebar nav a {
+    padding: 12px 14px;
+
+    border-radius: 10px;
+
+    text-decoration: none;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition: 0.2s;
+}
+
+
+.metas-sidebar nav a:hover {
+    background: rgba(124, 58, 237, 0.12);
+
+    color: #ffffff;
+}
+
+
+.metas-sidebar nav a.metas-active {
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    color: #ffffff;
+}
+
+
+.metas-sidebar > button {
+    margin-top: auto;
+
+    padding: 12px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: rgba(239, 68, 68, 0.1);
+
+    color: #f87171;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.metas-sidebar > button:hover {
+    background: rgba(239, 68, 68, 0.18);
+}
+
+
+/* =========================================
+   CONTEÚDO
+========================================= */
+
+.metas-main {
+    flex: 1;
+
+    padding: 32px 40px;
+
+    overflow-x: hidden;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.metas-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 35px;
+}
+
+
+.metas-header p {
+    margin: 0 0 5px;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+.metas-header h1 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 30px;
+}
+
+
+.metas-user {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.metas-avatar {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    font-weight: 700;
+}
+
+
+.metas-avatar img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+}
+
+
+.metas-user > div:last-child {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+
+.metas-user strong {
+    font-size: 14px;
+
+    color: #ffffff;
+}
+
+
+.metas-user span {
+    font-size: 12px;
+
+    color: #64748b;
+}
+
+
+/* =========================================
+   TOPO DA PÁGINA
+========================================= */
+
+.metas-topo {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 24px;
+}
+
+
+.metas-topo span {
+    color: #8b5cf6;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.8px;
+}
+
+
+.metas-topo h2 {
+    margin: 5px 0 0;
+
+    color: #ffffff;
+
+    font-size: 22px;
+}
+
+
+.metas-topo > button {
+    padding: 11px 18px;
+
+    border: none;
+    border-radius: 10px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    color: #ffffff;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        transform 0.2s,
+        box-shadow 0.2s;
+}
+
+
+.metas-topo > button:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 24px
+        rgba(124, 58, 237, 0.25);
+}
+
+
+/* =========================================
+   FORMULÁRIO
+========================================= */
+
+.meta-form {
+    margin-bottom: 25px;
+
+    padding: 24px;
+
+    border-radius: 16px;
+
+    background: #1e293b;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+}
+
+
+.meta-form h3 {
+    margin: 0 0 20px;
+
+    font-size: 18px;
+
+    color: #ffffff;
+}
+
+
+.meta-form-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 16px;
+}
+
+
+.meta-form-grid > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.meta-form label {
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+.meta-form input {
+    width: 100%;
+
+    box-sizing: border-box;
+
+    padding: 12px 13px;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+
+    border-radius: 9px;
+
+    outline: none;
+
+    background: #0f172a;
+
+    color: #ffffff;
+
+    font-size: 14px;
+
+    transition: 0.2s;
+}
+
+
+.meta-form input:focus {
+    border-color: #7c3aed;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(124, 58, 237, 0.1);
+}
+
+
+.meta-form-botoes {
+    display: flex;
+
+    justify-content: flex-end;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+.meta-form-botoes button {
+    padding: 10px 16px;
+
+    border: none;
+    border-radius: 9px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.meta-cancelar {
+    background: rgba(255, 255, 255, 0.07);
+
+    color: #cbd5e1;
+}
+
+
+.meta-salvar {
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    color: #ffffff;
+}
+
+
+/* =========================================
+   GRID DAS METAS
+========================================= */
+
+.metas-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(300px, 1fr)
+        );
+
+    gap: 20px;
+}
+
+
+/* =========================================
+   CARD
+========================================= */
+
+.meta-card {
+    padding: 22px;
+
+    border-radius: 16px;
+
+    background: #1e293b;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.06);
+
+    box-shadow:
+        0 8px 25px
+        rgba(0, 0, 0, 0.12);
+
+    transition:
+        transform 0.2s,
+        border-color 0.2s;
+}
+
+
+.meta-card:hover {
+    transform: translateY(-3px);
+
+    border-color:
+        rgba(124, 58, 237, 0.25);
+}
+
+
+.meta-card-header {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 15px;
+
+    margin-bottom: 22px;
+}
+
+
+.meta-card-header h3 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 17px;
+}
+
+
+.meta-card-header > span {
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(124, 58, 237, 0.15);
+
+    color: #a78bfa;
+
+    font-size: 12px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   VALORES
+========================================= */
+
+.meta-valores {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 15px;
+
+    margin-bottom: 18px;
+}
+
+
+.meta-valores > div {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+.meta-valores span {
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+.meta-valores strong {
+    color: #ffffff;
+
+    font-size: 16px;
+}
+
+
+/* =========================================
+   PROGRESSO
+========================================= */
+
+.meta-barra {
+    width: 100%;
+    height: 8px;
+
+    margin-bottom: 10px;
+
+    overflow: hidden;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+}
+
+
+.meta-progresso {
+    height: 100%;
+
+    border-radius: 20px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #4f46e5,
+            #8b5cf6
+        );
+
+    transition: width 0.4s ease;
+}
+
+
+.meta-card small {
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   AÇÕES
+========================================= */
+
+.meta-acoes {
+    display: flex;
+
+    gap: 10px;
+
+    margin-top: 20px;
+}
+
+
+.meta-acoes button {
+    flex: 1;
+
+    padding: 9px 12px;
+
+    border: none;
+    border-radius: 8px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.meta-editar {
+    background:
+        rgba(99, 102, 241, 0.12);
+
+    color: #a5b4fc;
+}
+
+
+.meta-editar:hover {
+    background:
+        rgba(99, 102, 241, 0.2);
+}
+
+
+.meta-excluir {
+    background:
+        rgba(239, 68, 68, 0.1);
+
+    color: #f87171;
+}
+
+
+.meta-excluir:hover {
+    background:
+        rgba(239, 68, 68, 0.18);
+}
+
+
+/* =========================================
+   ESTADO VAZIO
+========================================= */
+
+.metas-vazio {
+    padding: 60px 25px;
+
+    text-align: center;
+
+    border-radius: 16px;
+
+    background: #1e293b;
+
+    border:
+        1px dashed
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.metas-vazio h3 {
+    margin: 0 0 8px;
+
+    color: #ffffff;
+
+    font-size: 18px;
+}
+
+
+.metas-vazio p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 14px;
+}
+
+
+.metas-message {
+    color: #94a3b8;
+}
+
+
+/* =========================================
+   RESPONSIVO
+========================================= */
+
+@media (max-width: 900px) {
+
+    .metas-sidebar {
+        width: 200px;
+    }
+
+    .metas-main {
+        padding: 25px;
+    }
+
+    .meta-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    .metas-layout {
+        display: block;
+    }
+
+    .metas-sidebar {
+        width: 100%;
+        min-height: auto;
+
+        box-sizing: border-box;
+    }
+
+    .metas-header {
+        align-items: flex-start;
+
+        gap: 20px;
+    }
+
+    .metas-topo {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+    .metas-topo > button {
+        width: 100%;
+    }
+
+    .metas-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .meta-form-botoes {
+        flex-direction: column;
+    }
+
+    .meta-form-botoes button {
+        width: 100%;
+    }
+
+}
