@@ -27,6 +27,12 @@ function verificarToken(req, res, next) {
 
     const token = authHeader.split(" ")[1];
 
+    if (!token) {
+        return res.status(401).json({
+            mensagem: "Token não enviado!"
+        });
+    }
+
     try {
         const decoded = jwt.verify(
             token,
@@ -61,8 +67,17 @@ app.get("/", (req, res) => {
 app.post("/cadastro", async (req, res) => {
     const { nome, email, senha } = req.body;
 
+    if (!nome || !email || !senha) {
+        return res.status(400).json({
+            mensagem: "Preencha todos os campos!"
+        });
+    }
+
     try {
-        const senhaHash = await bcrypt.hash(senha, 10);
+        const senhaHash = await bcrypt.hash(
+            senha,
+            10
+        );
 
         const sql = `
             INSERT INTO usuarios
@@ -72,20 +87,28 @@ app.post("/cadastro", async (req, res) => {
 
         connection.query(
             sql,
-            [nome, email, senhaHash],
+            [
+                nome,
+                email,
+                senhaHash
+            ],
             (error, result) => {
 
                 if (error) {
                     console.log(error);
 
                     return res.status(500).json({
-                        mensagem: "Erro ao cadastrar usuário"
+                        mensagem:
+                            "Erro ao cadastrar usuário"
                     });
                 }
 
                 return res.status(201).json({
-                    mensagem: "Usuário cadastrado com sucesso!",
-                    usuarioId: result.insertId
+                    mensagem:
+                        "Usuário cadastrado com sucesso!",
+
+                    usuarioId:
+                        result.insertId
                 });
             }
         );
@@ -94,7 +117,8 @@ app.post("/cadastro", async (req, res) => {
         console.log(error);
 
         return res.status(500).json({
-            mensagem: "Erro ao cadastrar usuário"
+            mensagem:
+                "Erro ao cadastrar usuário"
         });
     }
 });
@@ -106,6 +130,13 @@ app.post("/cadastro", async (req, res) => {
 
 app.post("/login", (req, res) => {
     const { email, senha } = req.body;
+
+    if (!email || !senha) {
+        return res.status(400).json({
+            mensagem:
+                "Informe e-mail e senha!"
+        });
+    }
 
     const sql = `
         SELECT * FROM usuarios
@@ -121,43 +152,65 @@ app.post("/login", (req, res) => {
                 console.log(error);
 
                 return res.status(500).json({
-                    mensagem: "Erro ao fazer login"
+                    mensagem:
+                        "Erro ao fazer login"
                 });
             }
 
             if (result.length === 0) {
                 return res.status(401).json({
-                    mensagem: "E-mail ou senha inválidos!"
+                    mensagem:
+                        "E-mail ou senha inválidos!"
                 });
             }
 
             const usuario = result[0];
 
-            const senhaCorreta = await bcrypt.compare(
-                senha,
-                usuario.senha
-            );
+            try {
+                const senhaCorreta =
+                    await bcrypt.compare(
+                        senha,
+                        usuario.senha
+                    );
 
-            if (!senhaCorreta) {
-                return res.status(401).json({
-                    mensagem: "E-mail ou senha inválidos!"
+                if (!senhaCorreta) {
+                    return res.status(401).json({
+                        mensagem:
+                            "E-mail ou senha inválidos!"
+                    });
+                }
+
+                const token = jwt.sign(
+                    {
+                        id: usuario.id
+                    },
+                    process.env.JWT_SECRET,
+                    {
+                        expiresIn: "1h"
+                    }
+                );
+
+                return res.status(200).json({
+                    mensagem:
+                        "Login realizado com sucesso!",
+
+                    token: token,
+
+                    usuario: {
+                        id: usuario.id,
+                        nome: usuario.nome,
+                        email: usuario.email
+                    }
+                });
+
+            } catch (error) {
+                console.log(error);
+
+                return res.status(500).json({
+                    mensagem:
+                        "Erro ao verificar senha"
                 });
             }
-
-            const token = jwt.sign(
-                {
-                    id: usuario.id
-                },
-                process.env.JWT_SECRET,
-                {
-                    expiresIn: "1h"
-                }
-            );
-
-            return res.status(200).json({
-                mensagem: "Login realizado com sucesso!",
-                token
-            });
         }
     );
 });
@@ -167,92 +220,160 @@ app.post("/login", (req, res) => {
 // Perfil protegido
 // ====================
 
-app.get("/perfil", verificarToken, (req, res) => {
-    res.json({
-        mensagem: "Acesso autorizado!",
-        usuarioId: req.usuarioId
-    });
-});
+app.get(
+    "/perfil",
+    verificarToken,
+    (req, res) => {
+
+        const usuarioId =
+            req.usuarioId;
+
+        const sql = `
+            SELECT id, nome, email
+            FROM usuarios
+            WHERE id = ?
+        `;
+
+        connection.query(
+            sql,
+            [usuarioId],
+            (error, result) => {
+
+                if (error) {
+                    console.log(error);
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao buscar perfil"
+                    });
+                }
+
+                if (result.length === 0) {
+                    return res.status(404).json({
+                        mensagem:
+                            "Usuário não encontrado"
+                    });
+                }
+
+                return res.status(200).json(
+                    result[0]
+                );
+            }
+        );
+    }
+);
 
 
 // ====================
 // Cadastrar transação
 // ====================
 
-app.post("/transacoes", verificarToken, (req, res) => {
-    const {
-        descricao,
-        valor,
-        tipo,
-        data
-    } = req.body;
+app.post(
+    "/transacoes",
+    verificarToken,
+    (req, res) => {
 
-    const usuarioId = req.usuarioId;
-
-    const sql = `
-        INSERT INTO transacoes
-        (descricao, valor, tipo, data, usuario_id)
-        VALUES (?, ?, ?, ?, ?)
-    `;
-
-    connection.query(
-        sql,
-        [
+        const {
             descricao,
             valor,
             tipo,
-            data,
-            usuarioId
-        ],
-        (error, result) => {
+            data
+        } = req.body;
 
-            if (error) {
-                console.log(error);
+        const usuarioId =
+            req.usuarioId;
 
-                return res.status(500).json({
-                    mensagem: "Erro ao cadastrar transação!"
-                });
-            }
-
-            return res.status(201).json({
-                mensagem: "Transação cadastrada com sucesso!",
-                transacaoId: result.insertId
+        if (
+            !descricao ||
+            valor === undefined ||
+            !tipo ||
+            !data
+        ) {
+            return res.status(400).json({
+                mensagem:
+                    "Preencha todos os campos da transação!"
             });
         }
-    );
-});
+
+        const sql = `
+            INSERT INTO transacoes
+            (descricao, valor, tipo, data, usuario_id)
+            VALUES (?, ?, ?, ?, ?)
+        `;
+
+        connection.query(
+            sql,
+            [
+                descricao,
+                valor,
+                tipo,
+                data,
+                usuarioId
+            ],
+            (error, result) => {
+
+                if (error) {
+                    console.log(error);
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao cadastrar transação!"
+                    });
+                }
+
+                return res.status(201).json({
+                    mensagem:
+                        "Transação cadastrada com sucesso!",
+
+                    transacaoId:
+                        result.insertId
+                });
+            }
+        );
+    }
+);
 
 
 // ====================
 // Listar transações
 // ====================
 
-app.get("/transacoes", verificarToken, (req, res) => {
-    const usuarioId = req.usuarioId;
+app.get(
+    "/transacoes",
+    verificarToken,
+    (req, res) => {
 
-    const sql = `
-        SELECT * FROM transacoes
-        WHERE usuario_id = ?
-        ORDER BY data DESC
-    `;
+        const usuarioId =
+            req.usuarioId;
 
-    connection.query(
-        sql,
-        [usuarioId],
-        (error, result) => {
+        const sql = `
+            SELECT *
+            FROM transacoes
+            WHERE usuario_id = ?
+            ORDER BY data DESC
+        `;
 
-            if (error) {
-                console.log(error);
+        connection.query(
+            sql,
+            [usuarioId],
+            (error, result) => {
 
-                return res.status(500).json({
-                    mensagem: "Erro ao buscar transações!"
-                });
+                if (error) {
+                    console.log(error);
+
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao buscar transações!"
+                    });
+                }
+
+                return res.status(200).json(
+                    result
+                );
             }
-
-            return res.status(200).json(result);
-        }
-    );
-});
+        );
+    }
+);
 
 
 // ====================
@@ -264,8 +385,11 @@ app.delete(
     verificarToken,
     (req, res) => {
 
-        const id = req.params.id;
-        const usuarioId = req.usuarioId;
+        const id =
+            req.params.id;
+
+        const usuarioId =
+            req.usuarioId;
 
         const sql = `
             DELETE FROM transacoes
@@ -275,91 +399,131 @@ app.delete(
 
         connection.query(
             sql,
-            [id, usuarioId],
+            [
+                id,
+                usuarioId
+            ],
             (error, result) => {
 
                 if (error) {
                     console.log(error);
 
                     return res.status(500).json({
-                        mensagem: "Erro ao excluir transação"
+                        mensagem:
+                            "Erro ao excluir transação"
                     });
                 }
 
-                if (result.affectedRows === 0) {
+                if (
+                    result.affectedRows === 0
+                ) {
                     return res.status(404).json({
-                        mensagem: "Transação não encontrada"
+                        mensagem:
+                            "Transação não encontrada"
                     });
                 }
 
                 return res.status(200).json({
-                    mensagem: "Transação excluída com sucesso!"
+                    mensagem:
+                        "Transação excluída com sucesso!"
                 });
             }
         );
     }
 );
 
-app.put("/transacoes/:id", verificarToken, (req, res) => {
 
-    const id = req.params.id;
+// ====================
+// Editar transação
+// ====================
 
-    const {
-        descricao,
-        valor,
-        tipo,
-        data
-    } = req.body;
+app.put(
+    "/transacoes/:id",
+    verificarToken,
+    (req, res) => {
 
-    const usuarioId = req.usuarioId;
+        const id =
+            req.params.id;
 
-    const sql = `
-       UPDATE transacoes
-        SET descricao = ?, valor = ?, tipo = ?, data = ?
-        WHERE id = ?
+        const {
+            descricao,
+            valor,
+            tipo,
+            data
+        } = req.body;
+
+        const usuarioId =
+            req.usuarioId;
+
+        if (
+            !descricao ||
+            valor === undefined ||
+            !tipo ||
+            !data
+        ) {
+            return res.status(400).json({
+                mensagem:
+                    "Preencha todos os campos da transação!"
+            });
+        }
+
+        const sql = `
+            UPDATE transacoes
+            SET
+                descricao = ?,
+                valor = ?,
+                tipo = ?,
+                data = ?
+            WHERE id = ?
             AND usuario_id = ?
         `;
 
         connection.query(
-        sql,
-    [
-        descricao,
-        valor,
-        tipo,
-        data,
-        id,
-        usuarioId
-    ],
-        (error, result) => {
+            sql,
+            [
+                descricao,
+                valor,
+                tipo,
+                data,
+                id,
+                usuarioId
+            ],
+            (error, result) => {
 
-            if (error){
-                console.log(error);
+                if (error) {
+                    console.log(error);
 
-                return res.status(500).json({
-                    mensagem: "erro ao editar transação"
-                });
-            }
+                    return res.status(500).json({
+                        mensagem:
+                            "Erro ao editar transação"
+                    });
+                }
 
-            if (result.affectedRows === 0){
-                return res.status(404).json({
-                    mensagem:"Transação não encontrada"
-                });
-            }
+                if (
+                    result.affectedRows === 0
+                ) {
+                    return res.status(404).json({
+                        mensagem:
+                            "Transação não encontrada"
+                    });
+                }
 
                 return res.status(200).json({
-                    mensagem:"Transação editada com sucesso!"
+                    mensagem:
+                        "Transação editada com sucesso!"
                 });
-
-
+            }
+        );
     }
 );
-    
-});
+
 
 // ====================
 // Servidor
 // ====================
 
 app.listen(3000, () => {
-    console.log("Servidor rodando na porta 3000");
+    console.log(
+        "Servidor rodando na porta 3000"
+    );
 });

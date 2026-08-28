@@ -1,8 +1,7 @@
 import "./Dashboard.css";
 
 import { useEffect, useState } from "react";
-
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import {
     Chart as ChartJS,
@@ -30,8 +29,26 @@ ChartJS.register(
 function Dashboard() {
 
     const [transacoes, setTransacoes] = useState([]);
-
     const [periodo, setPeriodo] = useState("mes");
+
+    const navigate = useNavigate();
+
+    const nomeUsuario =
+        localStorage.getItem("nomeUsuario") || "Usuário";
+
+
+    /* =========================
+       LOGOUT
+    ========================= */
+
+    function handleLogout() {
+
+        localStorage.removeItem("token");
+        localStorage.removeItem("nomeUsuario");
+
+        navigate("/");
+
+    }
 
 
     /* =========================
@@ -41,18 +58,24 @@ function Dashboard() {
     useEffect(() => {
 
         fetch("http://localhost:3000/transacoes", {
+
             headers: {
+
                 Authorization:
                     "Bearer " +
                     localStorage.getItem("token")
+
             }
+
         })
             .then((response) => {
 
                 if (!response.ok) {
+
                     throw new Error(
                         "Erro ao buscar transações"
                     );
+
                 }
 
                 return response.json();
@@ -66,12 +89,8 @@ function Dashboard() {
 
                 } else {
 
-                    console.log(
-                        "Resposta do servidor:",
-                        data
-                    );
-
                     setTransacoes([]);
+
                 }
 
             })
@@ -88,7 +107,7 @@ function Dashboard() {
 
 
     /* =========================
-       TOTAL DE RECEITAS
+       RECEITAS
     ========================= */
 
     const receitas = transacoes
@@ -108,7 +127,7 @@ function Dashboard() {
 
 
     /* =========================
-       TOTAL DE DESPESAS
+       DESPESAS
     ========================= */
 
     const despesas = transacoes
@@ -134,7 +153,7 @@ function Dashboard() {
        FORMATAR DINHEIRO
     ========================= */
 
-    const formatarMoeda = (valor) => {
+    function formatarMoeda(valor) {
 
         return valor.toLocaleString(
             "pt-BR",
@@ -144,11 +163,11 @@ function Dashboard() {
             }
         );
 
-    };
+    }
 
 
     /* =========================
-       FILTRAR PERÍODO
+       FILTRO DE PERÍODO
     ========================= */
 
     const hoje = new Date();
@@ -166,6 +185,7 @@ function Dashboard() {
             if (periodo === "mes") {
 
                 return (
+
                     dataTransacao.getMonth() ===
                         hoje.getMonth()
 
@@ -173,6 +193,7 @@ function Dashboard() {
 
                     dataTransacao.getFullYear() ===
                         hoje.getFullYear()
+
                 );
 
             }
@@ -182,18 +203,16 @@ function Dashboard() {
 
             if (periodo === "3meses") {
 
-                const tresMesesAtras =
-                    new Date(hoje);
-
-                tresMesesAtras.setMonth(
-                    hoje.getMonth() - 2
-                );
-
-                tresMesesAtras.setDate(1);
+                const inicioTresMeses =
+                    new Date(
+                        hoje.getFullYear(),
+                        hoje.getMonth() - 2,
+                        1
+                    );
 
                 return (
                     dataTransacao >=
-                    tresMesesAtras
+                    inicioTresMeses
                 );
 
             }
@@ -204,8 +223,10 @@ function Dashboard() {
             if (periodo === "ano") {
 
                 return (
+
                     dataTransacao.getFullYear() ===
                     hoje.getFullYear()
+
                 );
 
             }
@@ -217,10 +238,11 @@ function Dashboard() {
 
 
     /* =========================
-       NOMES DOS MESES
+       MESES
     ========================= */
 
     const nomesMeses = [
+
         "Jan",
         "Fev",
         "Mar",
@@ -233,15 +255,14 @@ function Dashboard() {
         "Out",
         "Nov",
         "Dez"
+
     ];
 
 
-    /* =========================
-       DEFINIR MESES DO GRÁFICO
-    ========================= */
-
     let mesesExibidos = [];
 
+
+    /* ESTE MÊS */
 
     if (periodo === "mes") {
 
@@ -251,6 +272,8 @@ function Dashboard() {
 
     }
 
+
+    /* ÚLTIMOS 3 MESES */
 
     if (periodo === "3meses") {
 
@@ -272,18 +295,22 @@ function Dashboard() {
     }
 
 
+    /* ESTE ANO */
+
     if (periodo === "ano") {
 
         mesesExibidos = [
+
             0, 1, 2, 3, 4, 5,
             6, 7, 8, 9, 10, 11
+
         ];
 
     }
 
 
     /* =========================
-       CALCULAR VALORES POR MÊS
+       RECEITAS POR MÊS
     ========================= */
 
     const receitasPorMes =
@@ -297,9 +324,11 @@ function Dashboard() {
                         new Date(transacao.data);
 
                     return (
+
                         dataTransacao.getMonth() === mes
                         &&
                         transacao.tipo === "receita"
+
                     );
 
                 })
@@ -315,6 +344,10 @@ function Dashboard() {
         });
 
 
+    /* =========================
+       DESPESAS POR MÊS
+    ========================= */
+
     const despesasPorMes =
         mesesExibidos.map((mes) => {
 
@@ -326,9 +359,11 @@ function Dashboard() {
                         new Date(transacao.data);
 
                     return (
+
                         dataTransacao.getMonth() === mes
                         &&
                         transacao.tipo === "despesa"
+
                     );
 
                 })
@@ -359,6 +394,7 @@ function Dashboard() {
         datasets: [
 
             {
+
                 label: "Receitas",
 
                 data:
@@ -373,10 +409,11 @@ function Dashboard() {
                 borderWidth: 1,
 
                 borderRadius: 6
+
             },
 
-
             {
+
                 label: "Despesas",
 
                 data:
@@ -391,6 +428,7 @@ function Dashboard() {
                 borderWidth: 1,
 
                 borderRadius: 6
+
             }
 
         ]
@@ -399,7 +437,7 @@ function Dashboard() {
 
 
     /* =========================
-       OPÇÕES DO GRÁFICO
+       CONFIGURAÇÕES DO GRÁFICO
     ========================= */
 
     const opcoesGrafico = {
@@ -413,11 +451,12 @@ function Dashboard() {
             legend: {
 
                 labels: {
+
                     color: "#cbd5e1"
+
                 }
 
             },
-
 
             tooltip: {
 
@@ -426,11 +465,13 @@ function Dashboard() {
                     label: function (context) {
 
                         return (
+
                             context.dataset.label +
                             ": " +
                             formatarMoeda(
                                 context.raw
                             )
+
                         );
 
                     }
@@ -447,12 +488,16 @@ function Dashboard() {
             x: {
 
                 ticks: {
+
                     color: "#cbd5e1"
+
                 },
 
                 grid: {
+
                     color:
                         "rgba(255,255,255,0.05)"
+
                 }
 
             },
@@ -498,7 +543,9 @@ function Dashboard() {
             <aside className="dash-sidebar">
 
                 <h2 className="dash-logo">
+
                     Finance App
+
                 </h2>
 
 
@@ -539,8 +586,13 @@ function Dashboard() {
                 </nav>
 
 
-                <button className="dash-logout">
+                <button
+                    className="dash-logout"
+                    onClick={handleLogout}
+                >
+
                     Sair
+
                 </button>
 
             </aside>
@@ -570,19 +622,29 @@ function Dashboard() {
 
                     <div className="dash-user">
 
+
                         <div className="dash-avatar">
-                            C
+
+                            {nomeUsuario
+                                .charAt(0)
+                                .toUpperCase()}
+
                         </div>
 
 
                         <div>
 
                             <strong>
-                                Caio Luan
+
+                                {nomeUsuario}
+
                             </strong>
 
+
                             <span>
+
                                 Minha conta
+
                             </span>
 
                         </div>
@@ -604,11 +666,15 @@ function Dashboard() {
                         </span>
 
                         <strong>
+
                             {formatarMoeda(saldo)}
+
                         </strong>
 
                         <small>
+
                             Saldo disponível
+
                         </small>
 
                     </div>
@@ -621,11 +687,15 @@ function Dashboard() {
                         </span>
 
                         <strong>
+
                             {formatarMoeda(receitas)}
+
                         </strong>
 
                         <small>
+
                             Total de entradas
+
                         </small>
 
                     </div>
@@ -638,11 +708,15 @@ function Dashboard() {
                         </span>
 
                         <strong>
+
                             {formatarMoeda(despesas)}
+
                         </strong>
 
                         <small>
+
                             Total de saídas
+
                         </small>
 
                     </div>
@@ -651,7 +725,7 @@ function Dashboard() {
                 </div>
 
 
-                {/* CONTEÚDO INFERIOR */}
+                {/* PARTE INFERIOR */}
 
                 <div className="dash-content-grid">
 
@@ -666,35 +740,50 @@ function Dashboard() {
                             <div>
 
                                 <span>
+
                                     Resumo financeiro
+
                                 </span>
 
                                 <h2>
+
                                     Receitas x Despesas
+
                                 </h2>
 
                             </div>
 
 
                             <select
+
                                 value={periodo}
+
                                 onChange={(e) =>
                                     setPeriodo(
                                         e.target.value
                                     )
                                 }
+
                             >
 
                                 <option value="mes">
+
                                     Este mês
+
                                 </option>
+
 
                                 <option value="3meses">
+
                                     Últimos 3 meses
+
                                 </option>
 
+
                                 <option value="ano">
+
                                     Este ano
+
                                 </option>
 
                             </select>
@@ -725,18 +814,24 @@ function Dashboard() {
                             <div>
 
                                 <span>
+
                                     Movimentações
+
                                 </span>
 
                                 <h2>
+
                                     Últimas transações
+
                                 </h2>
 
                             </div>
 
 
                             <Link to="/transacoes">
+
                                 Ver todas
+
                             </Link>
 
                         </div>
@@ -748,7 +843,9 @@ function Dashboard() {
                             {transacoes.length === 0 ? (
 
                                 <p>
+
                                     Nenhuma transação encontrada.
+
                                 </p>
 
                             ) : (
@@ -788,9 +885,11 @@ function Dashboard() {
                                                 <div className="dash-transaction-info">
 
                                                     <strong>
+
                                                         {
                                                             transacao.descricao
                                                         }
+
                                                     </strong>
 
 
