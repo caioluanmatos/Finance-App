@@ -26,16 +26,27 @@ ChartJS.register(
 );
 
 function Dashboard() {
+
     const [transacoes, setTransacoes] = useState([]);
 
+    const [periodo, setPeriodo] = useState("mes");
+
+
+    /* =========================
+       BUSCAR TRANSAÇÕES
+    ========================= */
+
     useEffect(() => {
+
         fetch("http://localhost:3000/transacoes", {
             headers: {
                 Authorization:
-                    "Bearer " + localStorage.getItem("token")
+                    "Bearer " +
+                    localStorage.getItem("token")
             }
         })
             .then((response) => {
+
                 if (!response.ok) {
                     throw new Error(
                         "Erro ao buscar transações"
@@ -44,10 +55,15 @@ function Dashboard() {
 
                 return response.json();
             })
+
             .then((data) => {
+
                 if (Array.isArray(data)) {
+
                     setTransacoes(data);
+
                 } else {
+
                     console.log(
                         "Resposta do servidor:",
                         data
@@ -55,63 +71,209 @@ function Dashboard() {
 
                     setTransacoes([]);
                 }
+
             })
+
             .catch((error) => {
+
                 console.error(
                     "Erro ao buscar transações:",
                     error
                 );
+
             });
+
     }, []);
 
+
+    /* =========================
+       TOTAIS GERAIS
+       USADOS NOS CARDS
+    ========================= */
+
     const receitas = transacoes
+
         .filter(
             (transacao) =>
                 transacao.tipo === "receita"
         )
+
         .reduce(
             (total, transacao) =>
-                total + Number(transacao.valor),
+                total +
+                Number(transacao.valor),
+
             0
         );
 
+
     const despesas = transacoes
+
         .filter(
             (transacao) =>
                 transacao.tipo === "despesa"
         )
+
         .reduce(
             (total, transacao) =>
-                total + Number(transacao.valor),
+                total +
+                Number(transacao.valor),
+
             0
         );
 
+
     const saldo = receitas - despesas;
 
+
+    /* =========================
+       FORMATAR MOEDA
+    ========================= */
+
     const formatarMoeda = (valor) => {
-        return valor.toLocaleString("pt-BR", {
-            style: "currency",
-            currency: "BRL"
-        });
+
+        return valor.toLocaleString(
+            "pt-BR",
+            {
+                style: "currency",
+                currency: "BRL"
+            }
+        );
+
     };
 
-    // =========================
-    // GRÁFICO
-    // =========================
+
+    /* =========================
+       FILTRO DO GRÁFICO
+    ========================= */
+
+    const hoje = new Date();
+
+
+    const transacoesFiltradas = transacoes.filter(
+        (transacao) => {
+
+            const dataTransacao =
+                new Date(transacao.data);
+
+
+            /* ESTE MÊS */
+
+            if (periodo === "mes") {
+
+                return (
+
+                    dataTransacao.getMonth() ===
+                        hoje.getMonth()
+
+                    &&
+
+                    dataTransacao.getFullYear() ===
+                        hoje.getFullYear()
+
+                );
+
+            }
+
+
+            /* ÚLTIMOS 3 MESES */
+
+            if (periodo === "3meses") {
+
+                const tresMesesAtras =
+                    new Date(hoje);
+
+                tresMesesAtras.setMonth(
+                    hoje.getMonth() - 3
+                );
+
+                return (
+                    dataTransacao >=
+                    tresMesesAtras
+                );
+
+            }
+
+
+            /* ESTE ANO */
+
+            if (periodo === "ano") {
+
+                return (
+
+                    dataTransacao.getFullYear() ===
+                    hoje.getFullYear()
+
+                );
+
+            }
+
+
+            return true;
+
+        }
+    );
+
+
+    /* =========================
+       VALORES DO GRÁFICO
+    ========================= */
+
+    const receitasGrafico =
+        transacoesFiltradas
+
+            .filter(
+                (transacao) =>
+                    transacao.tipo ===
+                    "receita"
+            )
+
+            .reduce(
+                (total, transacao) =>
+                    total +
+                    Number(transacao.valor),
+
+                0
+            );
+
+
+    const despesasGrafico =
+        transacoesFiltradas
+
+            .filter(
+                (transacao) =>
+                    transacao.tipo ===
+                    "despesa"
+            )
+
+            .reduce(
+                (total, transacao) =>
+                    total +
+                    Number(transacao.valor),
+
+                0
+            );
+
+
+    /* =========================
+       DADOS DO GRÁFICO
+    ========================= */
 
     const dadosGrafico = {
+
         labels: [
             "Receitas",
             "Despesas"
         ],
 
         datasets: [
+
             {
                 label: "Valor em R$",
 
                 data: [
-                    receitas,
-                    despesas
+                    receitasGrafico,
+                    despesasGrafico
                 ],
 
                 backgroundColor: [
@@ -128,34 +290,55 @@ function Dashboard() {
 
                 borderRadius: 8
             }
+
         ]
+
     };
 
+
+    /* =========================
+       OPÇÕES DO GRÁFICO
+    ========================= */
+
     const opcoesGrafico = {
+
         responsive: true,
 
         maintainAspectRatio: false,
 
         plugins: {
+
             legend: {
+
                 labels: {
                     color: "#cbd5e1"
                 }
+
             },
 
             tooltip: {
+
                 callbacks: {
+
                     label: function (context) {
+
                         return formatarMoeda(
                             context.raw
                         );
+
                     }
+
                 }
+
             }
+
         },
 
+
         scales: {
+
             x: {
+
                 ticks: {
                     color: "#cbd5e1"
                 },
@@ -164,35 +347,55 @@ function Dashboard() {
                     color:
                         "rgba(255,255,255,0.05)"
                 }
+
             },
 
+
             y: {
+
                 beginAtZero: true,
 
                 ticks: {
+
                     color: "#94a3b8",
 
                     callback: function (value) {
+
                         return "R$ " + value;
+
                     }
+
                 },
 
                 grid: {
+
                     color:
                         "rgba(255,255,255,0.05)"
+
                 }
+
             }
+
         }
+
     };
 
+
     return (
+
         <div className="dash-layout">
+
+
+            {/* =====================
+                SIDEBAR
+            ===================== */}
 
             <aside className="dash-sidebar">
 
                 <h2 className="dash-logo">
                     Finance App
                 </h2>
+
 
                 <nav className="dash-menu">
 
@@ -203,21 +406,26 @@ function Dashboard() {
                         Dashboard
                     </Link>
 
+
                     <Link to="/transacoes">
                         Transações
                     </Link>
+
 
                     <Link to="/receitas">
                         Receitas
                     </Link>
 
+
                     <Link to="/despesas">
                         Despesas
                     </Link>
 
+
                     <Link to="/metas">
                         Metas
                     </Link>
+
 
                     <Link to="/perfil">
                         Perfil
@@ -225,17 +433,27 @@ function Dashboard() {
 
                 </nav>
 
+
                 <button className="dash-logout">
                     Sair
                 </button>
 
             </aside>
 
+
+            {/* =====================
+                CONTEÚDO
+            ===================== */}
+
             <div className="dash-main">
+
+
+                {/* HEADER */}
 
                 <header className="dash-header">
 
                     <div>
+
                         <p>
                             Visão geral financeira
                         </p>
@@ -243,13 +461,16 @@ function Dashboard() {
                         <h1>
                             Dashboard
                         </h1>
+
                     </div>
+
 
                     <div className="dash-user">
 
                         <div className="dash-avatar">
                             C
                         </div>
+
 
                         <div>
 
@@ -267,7 +488,13 @@ function Dashboard() {
 
                 </header>
 
+
+                {/* =====================
+                    CARDS
+                ===================== */}
+
                 <div className="dash-cards">
+
 
                     <div className="dash-card dash-balance">
 
@@ -285,6 +512,7 @@ function Dashboard() {
 
                     </div>
 
+
                     <div className="dash-card">
 
                         <span>
@@ -300,6 +528,7 @@ function Dashboard() {
                         </small>
 
                     </div>
+
 
                     <div className="dash-card">
 
@@ -317,11 +546,23 @@ function Dashboard() {
 
                     </div>
 
+
                 </div>
+
+
+                {/* =====================
+                    CONTEÚDO INFERIOR
+                ===================== */}
 
                 <div className="dash-content-grid">
 
+
+                    {/* =====================
+                        GRÁFICO
+                    ===================== */}
+
                     <div className="dash-panel dash-chart">
+
 
                         <div className="dash-panel-header">
 
@@ -337,21 +578,32 @@ function Dashboard() {
 
                             </div>
 
-                            <select>
-                                <option>
+
+                            <select
+                                value={periodo}
+                                onChange={(e) =>
+                                    setPeriodo(
+                                        e.target.value
+                                    )
+                                }
+                            >
+
+                                <option value="mes">
                                     Este mês
                                 </option>
 
-                                <option>
+                                <option value="3meses">
                                     Últimos 3 meses
                                 </option>
 
-                                <option>
+                                <option value="ano">
                                     Este ano
                                 </option>
+
                             </select>
 
                         </div>
+
 
                         <div className="dash-chart-area">
 
@@ -362,9 +614,16 @@ function Dashboard() {
 
                         </div>
 
+
                     </div>
 
+
+                    {/* =====================
+                        ÚLTIMAS TRANSAÇÕES
+                    ===================== */}
+
                     <div className="dash-panel">
+
 
                         <div className="dash-panel-header">
 
@@ -380,13 +639,16 @@ function Dashboard() {
 
                             </div>
 
+
                             <Link to="/transacoes">
                                 Ver todas
                             </Link>
 
                         </div>
 
+
                         <div className="dash-transactions">
+
 
                             {transacoes.length === 0 ? (
 
@@ -397,7 +659,9 @@ function Dashboard() {
                             ) : (
 
                                 transacoes
+
                                     .slice(0, 5)
+
                                     .map(
                                         (transacao) => (
 
@@ -408,6 +672,7 @@ function Dashboard() {
                                                 }
                                             >
 
+
                                                 <div
                                                     className={`dash-transaction-icon ${
                                                         transacao.tipo ===
@@ -416,11 +681,14 @@ function Dashboard() {
                                                             : "expense"
                                                     }`}
                                                 >
+
                                                     {transacao.tipo ===
                                                     "receita"
                                                         ? "+"
                                                         : "-"}
+
                                                 </div>
+
 
                                                 <div className="dash-transaction-info">
 
@@ -430,15 +698,19 @@ function Dashboard() {
                                                         }
                                                     </strong>
 
+
                                                     <span>
+
                                                         {new Date(
                                                             transacao.data
                                                         ).toLocaleDateString(
                                                             "pt-BR"
                                                         )}
+
                                                     </span>
 
                                                 </div>
+
 
                                                 <strong
                                                     className={
@@ -454,29 +726,42 @@ function Dashboard() {
                                                         ? "+ "
                                                         : "- "}
 
+
                                                     {formatarMoeda(
+
                                                         Number(
                                                             transacao.valor
                                                         )
+
                                                     )}
 
                                                 </strong>
 
+
                                             </div>
+
                                         )
                                     )
+
                             )}
+
 
                         </div>
 
+
                     </div>
+
 
                 </div>
 
+
             </div>
 
+
         </div>
+
     );
+
 }
 
 export default Dashboard;
