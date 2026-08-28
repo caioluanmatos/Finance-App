@@ -1,0 +1,592 @@
+/* =========================================
+   PÁGINA
+========================================= */
+
+.receitas-layout {
+    width: 100%;
+    min-height: 100vh;
+
+    display: flex;
+
+    background:
+        linear-gradient(
+            135deg,
+            #0b1120 0%,
+            #11152f 50%,
+            #32116d 100%
+        );
+
+    color: #f8fafc;
+}
+
+
+/* =========================================
+   SIDEBAR
+========================================= */
+
+.receitas-sidebar {
+    width: 250px;
+    min-height: 100vh;
+
+    padding: 32px 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    flex-shrink: 0;
+
+    background: #0b1120;
+
+    border-right:
+        1px solid
+        rgba(255, 255, 255, 0.08);
+}
+
+
+.receitas-logo {
+    margin: 0 0 40px;
+
+    padding-left: 12px;
+
+    font-size: 24px;
+    font-weight: 700;
+
+    color: #ffffff;
+}
+
+
+/* =========================================
+   MENU
+========================================= */
+
+.receitas-menu {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+.receitas-menu a {
+    width: 100%;
+
+    padding: 14px 16px;
+
+    display: block;
+
+    border-radius: 10px;
+
+    color: #94a3b8;
+
+    text-decoration: none;
+
+    transition: 0.2s;
+}
+
+
+.receitas-menu a:hover {
+    color: #ffffff;
+
+    background:
+        rgba(124, 58, 237, 0.15);
+}
+
+
+.receitas-menu a.receitas-active {
+    color: #ffffff;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+}
+
+
+/* =========================================
+   LOGOUT
+========================================= */
+
+.receitas-logout {
+    width: 100%;
+
+    margin-top: auto;
+
+    padding: 14px;
+
+    border: none;
+    border-radius: 10px;
+
+    background:
+        rgba(239, 68, 68, 0.12);
+
+    color: #f87171;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+
+.receitas-logout:hover {
+    background:
+        rgba(239, 68, 68, 0.22);
+}
+
+
+/* =========================================
+   CONTEÚDO PRINCIPAL
+========================================= */
+
+.receitas-main {
+    flex: 1;
+
+    min-width: 0;
+
+    padding: 40px 50px;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.receitas-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 32px;
+}
+
+
+.receitas-titulo p {
+    margin: 0 0 6px;
+
+    color: #94a3b8;
+
+    font-size: 14px;
+}
+
+
+.receitas-titulo h1 {
+    margin: 0;
+
+    color: #ffffff;
+
+    font-size: 32px;
+}
+
+
+/* =========================================
+   USUÁRIO
+========================================= */
+
+.receitas-user {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+
+.receitas-avatar {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    color: white;
+
+    font-weight: 700;
+}
+
+
+.receitas-avatar img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    border-radius: 50%;
+}
+
+
+.receitas-user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.receitas-user-info strong {
+    color: #ffffff;
+
+    font-size: 14px;
+}
+
+
+.receitas-user-info span {
+    margin-top: 4px;
+
+    color: #94a3b8;
+
+    font-size: 12px;
+}
+
+
+/* =========================================
+   TOTAL DE RECEITAS
+========================================= */
+
+.receitas-resumo {
+    width: 100%;
+
+    min-height: 180px;
+
+    margin-bottom: 25px;
+
+    padding: 28px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    border-radius: 18px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #047857,
+            #16a34a
+        );
+
+    box-shadow:
+        0 15px 35px
+        rgba(0, 0, 0, 0.18);
+}
+
+
+.receitas-resumo-titulo {
+    color: #d1fae5;
+
+    font-size: 15px;
+}
+
+
+.receitas-resumo-valor {
+    color: #ffffff;
+
+    font-size: 38px;
+}
+
+
+.receitas-resumo small {
+    color: #bbf7d0;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   PAINEL
+========================================= */
+
+.receitas-panel {
+    width: 100%;
+
+    padding: 26px;
+
+    border-radius: 18px;
+
+    background: #1e293b;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.07);
+
+    box-shadow:
+        0 15px 35px
+        rgba(0, 0, 0, 0.15);
+}
+
+
+/* =========================================
+   CABEÇALHO DO PAINEL
+========================================= */
+
+.receitas-panel-header {
+    width: 100%;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 24px;
+}
+
+
+.receitas-panel-header span {
+    color: #94a3b8;
+
+    font-size: 13px;
+}
+
+
+.receitas-panel-header h2 {
+    margin: 5px 0 0;
+
+    color: #ffffff;
+
+    font-size: 21px;
+}
+
+
+.receitas-nova {
+    padding: 11px 16px;
+
+    border-radius: 9px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #16a34a,
+            #22c55e
+        );
+
+    color: #ffffff;
+
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    transition: 0.2s;
+}
+
+
+.receitas-nova:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   LISTA
+========================================= */
+
+.receitas-lista {
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+.receita-item {
+    width: 100%;
+
+    padding: 16px;
+
+    display: flex;
+    align-items: center;
+
+    gap: 14px;
+
+    border-radius: 12px;
+
+    background: #0f172a;
+
+    transition: 0.2s;
+}
+
+
+.receita-item:hover {
+    transform: translateY(-1px);
+
+    background: #111c31;
+}
+
+
+/* =========================================
+   ÍCONE
+========================================= */
+
+.receita-icon {
+    width: 42px;
+    height: 42px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background:
+        rgba(34, 197, 94, 0.15);
+
+    color: #4ade80;
+
+    font-size: 21px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   INFORMAÇÕES
+========================================= */
+
+.receita-info {
+    flex: 1;
+
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+.receita-info strong {
+    color: #ffffff;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+}
+
+
+.receita-info span {
+    margin-top: 5px;
+
+    color: #64748b;
+
+    font-size: 12px;
+}
+
+
+.receita-valor {
+    color: #4ade80;
+
+    white-space: nowrap;
+
+    font-size: 15px;
+}
+
+
+.receitas-message {
+    margin: 20px 0;
+
+    color: #94a3b8;
+}
+
+
+/* =========================================
+   TABLET
+========================================= */
+
+@media (max-width: 900px) {
+
+    .receitas-sidebar {
+        width: 210px;
+    }
+
+    .receitas-main {
+        padding: 30px;
+    }
+
+}
+
+
+/* =========================================
+   CELULAR
+========================================= */
+
+@media (max-width: 700px) {
+
+    .receitas-sidebar {
+        display: none;
+    }
+
+    .receitas-main {
+        width: 100%;
+
+        padding: 24px 18px;
+    }
+
+    .receitas-user {
+        display: none;
+    }
+
+    .receitas-header {
+        margin-bottom: 24px;
+    }
+
+    .receitas-titulo h1 {
+        font-size: 28px;
+    }
+
+    .receitas-resumo {
+        min-height: 160px;
+
+        padding: 22px;
+    }
+
+    .receitas-resumo-valor {
+        font-size: 30px;
+    }
+
+    .receitas-panel {
+        padding: 18px;
+    }
+
+    .receitas-panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .receitas-nova {
+        width: 100%;
+
+        text-align: center;
+    }
+
+    .receita-item {
+        flex-wrap: wrap;
+    }
+
+    .receita-valor {
+        margin-left: 56px;
+    }
+
+}
