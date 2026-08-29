@@ -5,7 +5,8 @@ import {
     FaChartLine,
     FaWallet,
     FaBullseye,
-    FaShieldAlt
+    FaShieldAlt,
+    FaMobileAlt
 } from "react-icons/fa";
 
 import "./Home.css";
@@ -25,6 +26,10 @@ function Home() {
 
                     <a href="#recursos">
                         Recursos
+                    </a>
+
+                    <a href="#mobile">
+                        Mobile
                     </a>
 
                     <a href="#sobre">
@@ -263,6 +268,49 @@ function Home() {
                             </p>
 
                         </article>
+
+                    </div>
+
+                </section>
+
+
+                {/* VERSÃO MOBILE */}
+                <section
+                    className="home-mobile"
+                    id="mobile"
+                >
+
+                    <div className="home-mobile-content">
+
+                        <div className="home-mobile-icon">
+                            <FaMobileAlt />
+                        </div>
+
+                        <span className="home-mobile-badge">
+                            EM BREVE
+                        </span>
+
+                        <h2>
+                            Finance App também no seu celular
+                        </h2>
+
+                        <p>
+                            Estamos preparando a versão mobile do
+                            Finance App para você acompanhar suas
+                            receitas, despesas e metas de qualquer lugar.
+                        </p>
+
+                        <div className="home-mobile-platforms">
+
+                            <span>
+                                Android
+                            </span>
+
+                            <span>
+                                iOS
+                            </span>
+
+                        </div>
 
                     </div>
 

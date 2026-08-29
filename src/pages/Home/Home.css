@@ -933,3 +933,156 @@
         min-width: 12px;
     }
 }
+
+
+/* =========================
+   MOBILE - EM BREVE
+========================= */
+
+.home-page .home-mobile {
+    width: 100%;
+    padding: 100px 40px;
+
+    display: flex;
+    justify-content: center;
+
+    background: #0b1324;
+}
+
+.home-page .home-mobile-content {
+    width: 100%;
+    max-width: 900px;
+
+    padding: 60px 40px;
+
+    text-align: center;
+
+    border-radius: 28px;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(79, 70, 229, 0.16),
+            rgba(124, 58, 237, 0.16)
+        );
+
+    border:
+        1px solid
+        rgba(167, 139, 250, 0.20);
+
+    box-shadow:
+        0 25px 60px
+        rgba(0, 0, 0, 0.25);
+}
+
+.home-page .home-mobile-icon {
+    width: 70px;
+    height: 70px;
+
+    margin: 0 auto 20px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 20px;
+
+    color: #ffffff;
+    font-size: 30px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #4f46e5,
+            #7c3aed
+        );
+
+    box-shadow:
+        0 12px 30px
+        rgba(124, 58, 237, 0.35);
+}
+
+.home-page .home-mobile-badge {
+    display: inline-block;
+
+    margin-bottom: 18px;
+    padding: 8px 16px;
+
+    border-radius: 999px;
+
+    color: #c4b5fd;
+
+    background:
+        rgba(124, 58, 237, 0.16);
+
+    font-size: 12px;
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+.home-page .home-mobile-content h2 {
+    margin-bottom: 18px;
+
+    color: #ffffff;
+
+    font-size: 38px;
+    font-weight: 700;
+}
+
+.home-page .home-mobile-content p {
+    max-width: 650px;
+
+    margin: 0 auto 28px;
+
+    color: #94a3b8;
+
+    font-size: 16px;
+    line-height: 1.7;
+}
+
+.home-page .home-mobile-platforms {
+    display: flex;
+    justify-content: center;
+
+    gap: 12px;
+}
+
+.home-page .home-mobile-platforms span {
+    padding: 11px 22px;
+
+    border-radius: 10px;
+
+    color: #ffffff;
+
+    background: #172033;
+
+    border:
+        1px solid
+        #26324a;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 600px) {
+
+    .home-page .home-mobile {
+        padding: 65px 20px;
+    }
+
+    .home-page .home-mobile-content {
+        padding: 40px 22px;
+    }
+
+    .home-page .home-mobile-content h2 {
+        font-size: 30px;
+    }
+
+    .home-page .home-mobile-platforms {
+        flex-direction: column;
+    }
+}
